@@ -58,6 +58,7 @@ injectFunc(function(){
 
 // Canvas Fingerprint Disabler
 injectFunc(function() {
+  // In it's own script tag because it's so large
   var script = document.createElement('script');
   script.id = '1337';
   script.type = "text/javascript";
