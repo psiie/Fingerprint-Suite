@@ -75,7 +75,7 @@ injectFunc(function() {
           try {
               var hasAccess = element.contentWindow.HTMLCanvasElement;
           } catch (e) {
-              console.log("can't access " + e);
+              // console.log("can't access " + e);
               return;
           }
           overrideCanvasProto(element.contentWindow.HTMLCanvasElement);

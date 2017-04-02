@@ -9,9 +9,13 @@ function replaceAgent(req) {
   for (var i=0; i<req.requestHeaders.length; i++) {
     if (req.requestHeaders[i].name == 'User-Agent') {
       req.requestHeaders[i].value = userAgent;
-    } else if (req.requestHeaders[i].name == 'Referer') {
-      req.requestHeaders[i].value = '';
-    } else if (req.requestHeaders[i].name == 'Accept-Language') {
+    } 
+    // Disabled because this causes cross-origin issues for some reason
+    // eg: drive.google.com
+    // else if (req.requestHeaders[i].name == 'Referer') {
+    //   req.requestHeaders[i].value = '';
+    // } 
+    else if (req.requestHeaders[i].name == 'Accept-Language') {
       req.requestHeaders[i].value = 'en-US,en;q=0.8';
     }
   }
@@ -21,6 +25,6 @@ function replaceAgent(req) {
 
 
 
-chrome.extension.onMessage.addListener(function(req, sender, res) {
-  console.log(req.action);
-});
+// chrome.extension.onMessage.addListener(function(req, sender, res) {
+//   console.log(req.action);
+// });
