@@ -50,10 +50,10 @@ function preflightInjections() {
      HTMLCanvasElement.prototype.getContext = function (a, b) {
       if (a.toLowerCase().indexOf("webgl") >= 0) return null;
       if (b) {return window.ogcctxfunc8675309.call(this, a, b)} 
-      else {return window.ogcctxfunc8675309.call(this, a)}
-     };
-    };
-  });
+        else {return window.ogcctxfunc8675309.call(this, a)}
+      };
+  };
+});
 
   // Canvas Fingerprint Disabler
   injectFunc(function() {
@@ -63,101 +63,101 @@ function preflightInjections() {
     script.type = "text/javascript";
 
     function getRandomString() {
-        var text = "";
-        var charset = "abcdefghijklmnopqrstuvwxyz";
-        for (var i = 0; i < 5; i++)
-            text += charset.charAt(Math.floor(Math.random() * charset.length));
-        return text;
+      var text = "";
+      var charset = "abcdefghijklmnopqrstuvwxyz";
+      for (var i = 0; i < 5; i++)
+        text += charset.charAt(Math.floor(Math.random() * charset.length));
+      return text;
     }
     function inject(element) {
-        if (element.tagName.toUpperCase() === "IFRAME" && element.contentWindow) {
-            try {
-                var hasAccess = element.contentWindow.HTMLCanvasElement;
-            } catch (e) {
+      if (element.tagName.toUpperCase() === "IFRAME" && element.contentWindow) {
+        try {
+          var hasAccess = element.contentWindow.HTMLCanvasElement;
+        } catch (e) {
                 // console.log("can't access " + e);
                 return;
+              }
+              overrideCanvasProto(element.contentWindow.HTMLCanvasElement);
+              overrideCanvaRendProto(element.contentWindow.CanvasRenderingContext2D);
+              overrideDocumentProto(element.contentWindow.Document);
             }
-            overrideCanvasProto(element.contentWindow.HTMLCanvasElement);
-            overrideCanvaRendProto(element.contentWindow.CanvasRenderingContext2D);
-            overrideDocumentProto(element.contentWindow.Document);
-        }
-    }
-    function overrideCanvasProto(root) {
-        function overrideCanvasInternal(name, old) {
-            Object.defineProperty(root.prototype, name,
-            {
+          }
+          function overrideCanvasProto(root) {
+            function overrideCanvasInternal(name, old) {
+              Object.defineProperty(root.prototype, name,
+              {
                 value: function () {
-                    var width = this.width;
-                    var height = this.height;
-                    var context = this.getContext("2d");
-                    var imageData = context.getImageData(0, 0, width, height);
-                    for (var i = 0; i < height; i++) {
-                        for (var j = 0; j < width; j++) {
-                            var index = ((i * (width * 4)) + (j * 4));
-                            imageData.data[index + 0] = imageData.data[index + 0] + r;
-                            imageData.data[index + 1] = imageData.data[index + 1] + g;
-                            imageData.data[index + 2] = imageData.data[index + 2] + b;
-                            imageData.data[index + 3] = imageData.data[index + 3] + a;
-                        }
+                  var width = this.width;
+                  var height = this.height;
+                  var context = this.getContext("2d");
+                  var imageData = context.getImageData(0, 0, width, height);
+                  for (var i = 0; i < height; i++) {
+                    for (var j = 0; j < width; j++) {
+                      var index = ((i * (width * 4)) + (j * 4));
+                      imageData.data[index + 0] = imageData.data[index + 0] + r;
+                      imageData.data[index + 1] = imageData.data[index + 1] + g;
+                      imageData.data[index + 2] = imageData.data[index + 2] + b;
+                      imageData.data[index + 3] = imageData.data[index + 3] + a;
                     }
-                    context.putImageData(imageData, 0, 0);
-                    return old.apply(this, arguments);
+                  }
+                  context.putImageData(imageData, 0, 0);
+                  return old.apply(this, arguments);
                 }
+              }
+              );
             }
-            );
-        }
-        overrideCanvasInternal("toDataURL", root.prototype.toDataURL);
-        overrideCanvasInternal("toBlob", root.prototype.toBlob);
+            overrideCanvasInternal("toDataURL", root.prototype.toDataURL);
+            overrideCanvasInternal("toBlob", root.prototype.toBlob);
         //overrideCanvasInternal("mozGetAsFile", root.prototype.mozGetAsFile);
-    }
-    function overrideCanvaRendProto(root) {
+      }
+      function overrideCanvaRendProto(root) {
         var getImageData = root.prototype.getImageData;
         Object.defineProperty(root.prototype, "getImageData",
         {
-            value: function () {
-                var imageData = getImageData.apply(this, arguments);
-                var height = imageData.height;
-                var width = imageData.width;
+          value: function () {
+            var imageData = getImageData.apply(this, arguments);
+            var height = imageData.height;
+            var width = imageData.width;
                     //console.log("getImageData " + width + " " + height);
                     for (var i = 0; i < height; i++) {
-                        for (var j = 0; j < width; j++) {
-                            var index = ((i * (width * 4)) + (j * 4));
-                            imageData.data[index + 0] = imageData.data[index + 0] + r;
-                            imageData.data[index + 1] = imageData.data[index + 1] + g;
-                            imageData.data[index + 2] = imageData.data[index + 2] + b;
-                            imageData.data[index + 3] = imageData.data[index + 3] + a;
-                        }
+                      for (var j = 0; j < width; j++) {
+                        var index = ((i * (width * 4)) + (j * 4));
+                        imageData.data[index + 0] = imageData.data[index + 0] + r;
+                        imageData.data[index + 1] = imageData.data[index + 1] + g;
+                        imageData.data[index + 2] = imageData.data[index + 2] + b;
+                        imageData.data[index + 3] = imageData.data[index + 3] + a;
+                      }
                     }
                     return imageData;
-                }
-            }
-            );
-    }
-    function overrideDocumentProto(root) {
-        function doOverrideDocumentProto(old, name) {
-            Object.defineProperty(root.prototype, name,
-            {
-                value: function () {
-                    var element = old.apply(this, arguments);
-                        //console.log(name+ " everridden call"+element);
-                        if (element == null) {
-                            return null;
-                        }
-                        if (Object.prototype.toString.call(element) === '[object HTMLCollection]' ||
-                            Object.prototype.toString.call(element) === '[object NodeList]') {
-                            for (var i = 0; i < element.length; ++i) {
-                                var el = element[i];
-                                //console.log("elements list inject " + name);
-                                inject(el);
-                            }
-                        } else {
-                            //console.log("element inject " + name);
-                            inject(element);
-                        }
-                        return element;
-                    }
+                  }
                 }
                 );
+      }
+      function overrideDocumentProto(root) {
+        function doOverrideDocumentProto(old, name) {
+          Object.defineProperty(root.prototype, name,
+          {
+            value: function () {
+              var element = old.apply(this, arguments);
+                        //console.log(name+ " everridden call"+element);
+                        if (element == null) {
+                          return null;
+                        }
+                        if (Object.prototype.toString.call(element) === '[object HTMLCollection]' ||
+                          Object.prototype.toString.call(element) === '[object NodeList]') {
+                          for (var i = 0; i < element.length; ++i) {
+                            var el = element[i];
+                                //console.log("elements list inject " + name);
+                                inject(el);
+                              }
+                            } else {
+                            //console.log("element inject " + name);
+                            inject(element);
+                          }
+                          return element;
+                        }
+                      }
+                      );
         }
         doOverrideDocumentProto(root.prototype.createElement, "createElement");
         doOverrideDocumentProto(root.prototype.createElementNS, "createElementNS");
@@ -166,19 +166,20 @@ function preflightInjections() {
         doOverrideDocumentProto(root.prototype.getElementsByClassName, "getElementsByClassName");
         doOverrideDocumentProto(root.prototype.getElementsByTagName, "getElementsByTagName");
         doOverrideDocumentProto(root.prototype.getElementsByTagNameNS, "getElementsByTagNameNS");
-    }
+      }
 
-    overrideCanvasProto(HTMLCanvasElement);
-    overrideCanvaRendProto(CanvasRenderingContext2D);
-    overrideDocumentProto(Document);
-  });
+      overrideCanvasProto(HTMLCanvasElement);
+      overrideCanvaRendProto(CanvasRenderingContext2D);
+      overrideDocumentProto(Document);
+    });
 }
 
 //This line opens up a long-lived connection to your background page.
-var port = chrome.runtime.connect({name:"domain-sync"});
+var port = chrome.runtime.connect({name:"content-sync"});
 port.onMessage.addListener(function(message,sender){
-console.log(message.isBlacklisted);
+  console.log(message.isBlacklisted);
   // if(message.greeting){
   //   console.log(message.isBlacklisted);
   // }
 });
+

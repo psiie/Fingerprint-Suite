@@ -33,6 +33,7 @@ var extDisabled = false;
 var blacklist = ['startpage.com']; // move to db later
 
 chrome.runtime.onConnect.addListener(function(port){
+  console.log('port name ', port.name);
   var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b)*(\/[\/\d\w\.-]*)*(?:[\?])*(.+)*/;
   var site = port.sender.url.match(urlRegX)[1]
   if (extDisabled) {
@@ -41,5 +42,11 @@ chrome.runtime.onConnect.addListener(function(port){
     port.postMessage({isBlacklisted: true}); 
   } else {
     port.postMessage({isBlacklisted: false}); 
+  }
+});
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.getBlacklist) {
+    sendResponse({farewell: "goodbye"});
   }
 });
