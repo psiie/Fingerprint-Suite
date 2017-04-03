@@ -1,3 +1,7 @@
+// -------------------------------------------------------------------------- //
+//                         Replace User Agent                                 //
+// -------------------------------------------------------------------------- //
+
 var userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36';
 
 chrome.webRequest.onBeforeSendHeaders.addListener(replaceAgent, {
@@ -22,9 +26,20 @@ function replaceAgent(req) {
   return { requestHeaders: req.requestHeaders}
 }
 
+// -------------------------------------------------------------------------- //
+//                          Blacklist Check                                   //
+// -------------------------------------------------------------------------- //
+var extDisabled = false;
+var blacklist = ['startpage.com']; // move to db later
 
-
-
-// chrome.extension.onMessage.addListener(function(req, sender, res) {
-//   console.log(req.action);
-// });
+chrome.runtime.onConnect.addListener(function(port){
+  var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b)*(\/[\/\d\w\.-]*)*(?:[\?])*(.+)*/;
+  var site = port.sender.url.match(urlRegX)[1]
+  if (extDisabled) {
+    port.postMessage({isBlacklisted: false}); 
+  } else if (blacklist.indexOf(site) !== -1) {
+    port.postMessage({isBlacklisted: true}); 
+  } else {
+    port.postMessage({isBlacklisted: false}); 
+  }
+});
