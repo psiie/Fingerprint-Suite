@@ -1,7 +1,7 @@
 {
   "background": {
-    // "page": "background.html",
-    "scripts": ["js/background.js"]
+    "page": "popup.html"
+    // "scripts": ["js/background.js"]
   },
   "manifest_version": 2,
   "name": "Fingerprint Suite",
@@ -19,7 +19,12 @@
       "run_at": "document_start",
       "js": ["js/content.js"]
     }
-  ]
+  ],
+  "browser_action": {
+    // "default_icon": "icon.png",
+    "default_popup": "popup.html",
+    "default_title": "Click here!"
+  }
 }
 
 // Icon modified from https://commons.wikimedia.org/wiki/File:Ic_visibility_off_48px.svg
