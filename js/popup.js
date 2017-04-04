@@ -26,10 +26,20 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // ------------------ Button Click Events ------------------ //
   blacklistBtn.addEventListener('click', function() {
-    if (!extDisabled) blacklistBtn.innerText = 'clicked';
+    
   });
   pauseBtn.addEventListener('click', function() {
-    pauseBtn.innerText = 'clicked';
+    if (extDisabled) {
+      extDisabled = false;
+      pauseBtn.innerText = 'Disabled Globally';
+      pauseBtn.classList.remove('alert');
+      pauseBtn.classList.add('secondary');
+    } else {
+      extDisabled = true;
+      pauseBtn.innerText = 'Enabled Globally';
+      pauseBtn.classList.remove('secondary');
+      pauseBtn.classList.add('alert');
+    }
   });
 
 });
