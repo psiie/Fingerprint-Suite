@@ -2,17 +2,31 @@ document.addEventListener('DOMContentLoaded', function() {
   var debug = document.getElementById('debug');
   var blacklistBtn = document.getElementById('blacklist');
   var pauseBtn = document.getElementById('pause');
+  var extDisabled = false;
   
-  // Get info from content.js
+  // ------------------ Set Initial Conditions ------------------ //
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {cmd: 'getUrl'}, function(response) {
-      debug.innerText = JSON.stringify(response);   
+    chrome.tabs.sendMessage(tabs[0].id, {cmd: 'getOptions'}, function(response) {
+      if (response && response.isBlacklisted) {
+        blacklistBtn.innerText = 'Disabled on this Domain';
+        blacklistBtn.classList.remove('success');
+        blacklistBtn.classList.add('alert');
+      }
+      if (response && response.extDisabled) {
+        extDisabled = true;
+        debug.innerText = 'yes';
+        pauseBtn.classList.remove('secondary');
+        pauseBtn.classList.add('alert');
+        pauseBtn.innerText = 'Disabled Globally';
+        blacklistBtn.classList.remove('success', 'alert');
+        blacklistBtn.classList.add('disabled');
+      }
     });
   });
   
-
+  // ------------------ Button Click Events ------------------ //
   blacklistBtn.addEventListener('click', function() {
-    blacklistBtn.innerText = 'clicked';
+    if (!extDisabled) blacklistBtn.innerText = 'clicked';
   });
   pauseBtn.addEventListener('click', function() {
     pauseBtn.innerText = 'clicked';
@@ -21,6 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+
+
+
+
+
+// debug.innerText = JSON.stringify(response);
 // var txt = Math.floor(Math.random()*100);
 
 

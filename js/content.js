@@ -176,8 +176,23 @@ function preflightInjections() {
 
 
 
+var url, isBlacklisted, extDisabled;
+chrome.runtime.sendMessage({cmd: 'getMeta'}, function(response) {
+  console.log('content', response);
+  url = response.url;
+  isBlacklisted = response.isBlacklisted;
+  extDisabled = response.extDisabled;
+  if (!response.isBlacklisted) preflightInjections();
+});
+
+
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.cmd && request.cmd === 'getUrl') {
-    sendResponse({url: document.location.href});
+  if (request.cmd && request.cmd === 'getOptions') {
+    sendResponse({
+      url: url,
+      isBlacklisted: isBlacklisted,
+      extDisabled: extDisabled
+    });
   }
 });

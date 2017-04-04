@@ -31,7 +31,7 @@ function replaceAgent(req) {
 // -------------------------------------------------------------------------- //
 var extDisabled = false;
 var blacklist = ['startpage.com']; // move to db later
-
+var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b)*(\/[\/\d\w\.-]*)*(?:[\?])*(.+)*/;
 
 
 
@@ -51,11 +51,19 @@ var blacklist = ['startpage.com']; // move to db later
 
 
 
-// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//   if (request.cmd && request.cmd === "getPopupInfo") {
-//     var contentGetUrl = function(tabs) {
-//       chrome.tabs.sendMessage(tabs[0].id, {cmd: 'getUrl'}, function(response) {});
-//     }
-//     chrome.tabs.query({active: true, currentWindow: true}, contentGetUrl);
-//   }
-// });
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.cmd && request.cmd === 'getMeta') {
+    sendResponse({
+      url: sender.url.match(urlRegX)[1],
+      isBlacklisted: true,
+      extDisabled: true
+      // extDisabled: extDisabled
+    });
+  }
+  // if (request.cmd && request.cmd === "getPopupInfo") {
+  //   var contentGetUrl = function(tabs) {
+  //     chrome.tabs.sendMessage(tabs[0].id, {cmd: 'getUrl'}, function(response) {});
+  //   }
+  //   chrome.tabs.query({active: true, currentWindow: true}, contentGetUrl);
+  // }
+});
