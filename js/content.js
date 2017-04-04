@@ -174,16 +174,7 @@ function preflightInjections() {
     });
 }
 
-//This line opens up a long-lived connection to your background page.
-// var port = chrome.runtime.connect({name:"content-sync"});
-// port.onMessage.addListener(function(message,sender){
-//   console.log(message.isBlacklisted);
-// });
 
-// chrome.runtime.sendMessage({id: 'content'}, function(response) {
-//   // debug.innerText = JSON.stringify(response)
-//   debug.innerText = JSON.stringify(response)
-// });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd && request.cmd === 'getUrl') {
