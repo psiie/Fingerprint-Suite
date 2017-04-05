@@ -190,6 +190,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'reload') location.reload();
   if (request.cmd == 'getOptions') sendResponse({
     isBlacklisted: isBlacklisted, 
-    extDisabled: true
+    extDisabled: extDisabled
   });
 });

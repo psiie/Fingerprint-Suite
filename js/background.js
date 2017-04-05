@@ -37,9 +37,33 @@ var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'informContentJs') {
     sendResponse({extDisabled: extDisabled});
-  // } else if (request.cmd == 'informPopupJs') {
-  //   sendResponse({extDisabled: extDisabled});
   } else if (request.cmd == 'setState') {
+    if (request.opt == 'globalDisabled') {
+      extDisabled = true;
+      console.log('disabled ', extDisabled);
+    }
+    // console.log(request.opt);
+    // switch (request.opt) {
+    //   case 'globalEnabled':
+    //     extDisabled = false;
+    //     console.log('Enabled'. extDisabled);
+    //     break;
+    //   case 'globalDisabled':
+    //     extDisabled = true;
+    //     console.log('Disabled'. extDisabled);
+    //     break;
+    //   case 'pageEnabled':
+    //     break;
+    //   case 'pageDisabled':
+    //     break;
+    // }
     sendResponse({cmd: 'readyToReload'});
   }
 });
+
+
+
+
+
+  // } else if (request.cmd == 'informPopupJs') {
+  //   sendResponse({extDisabled: extDisabled});

@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         pauseBtn.className = 'button alert';
         blacklistBtn.className = 'button disabled strike';
       }
+      debug.innerText = pageDisabled + ' ' + extDisabled
     });
   });
 
@@ -35,7 +36,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ------------------ Button Click Events ------------------ //
   blacklistBtn.addEventListener('click', function() {
-    
+    var send;
+    // var btnDisabled = blacklistBtn.classList.contains('disabled');
+    // if (!btnDisabled) {
+      if (pageDisabled) { // Page is enabled
+        pageDisabled = false;
+        blacklistBtn.innerText = 'Running on this Domain';
+        blacklistBtn.className = 'button success';
+        send = 'pageEnabled';
+      } else { // Page is disabled
+        pageDisabled = true;
+        blacklistBtn.innerText = 'Disabled on this Domain';
+        blacklistBtn.className = 'button alert';
+        send = 'pageDisabled';
+      }
+      sendUpdate(send);
+    // }
   });
 
   pauseBtn.addEventListener('click', function() {
@@ -53,21 +69,22 @@ document.addEventListener('DOMContentLoaded', function() {
       blacklistBtn.classList.add('disabled', 'strike');
       send = 'globalDisabled';
     }
+    sendUpdate(send);
 
-    chrome.runtime.sendMessage({cmd: 'setState', opt: send}, function(response) {
-      if (response.cmd == 'readyToReload') {
-        chrome.tabs.sendMessage(activeTab, {cmd: 'reload'}, function(response) {
-          // debug.innerText = 'sent reload request';
-          // window.close();
-          // location.reload();
-        });
-      }
-
-    });
 
   });
 
 
+function sendUpdate(message) {
+  chrome.runtime.sendMessage({cmd: 'setState', opt: message}, function(response) {
+    if (response.cmd == 'readyToReload') {
+      chrome.tabs.sendMessage(activeTab, {cmd: 'reload'}, function(response) {
+        // window.close();
+        // location.reload();
+      });
+    }
+  });
+}
 
 
 
