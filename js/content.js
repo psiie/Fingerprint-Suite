@@ -174,38 +174,18 @@ function preflightInjections() {
     });
 }
 
-
-
-
-// chrome.runtime.sendMessage({cmd: 'getMeta'}, function(response) {
-//   console.log('content', response);
-//   url = response.url;
-//   isBlacklisted = response.isBlacklisted;
-//   extDisabled = response.extDisabled;
-//   if (!response.isBlacklisted) preflightInjections();
-// });
-
-// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//   if (request.cmd && request.cmd === 'getOptions') {
-//     sendResponse({
-//       url: url,
-//       isBlacklisted: isBlacklisted,
-//       extDisabled: extDisabled
-//     });
-//   } 
-// });
-
-
 var url, 
     isBlacklisted, 
     extDisabled;
 
-// var port = chrome.runtime.connect({name:"content-sync"});
-// port.onMessage.addListener(function(message,sender){
-//   console.log(message);
-// });
 
+// Get informed from background.js as to if this page is blacklisted
 chrome.runtime.sendMessage({cmd: 'informContentJs'}, function(response) {
   extDisabled = response.extDisabled;
   console.log(response);
+});
+
+// Reload on change from Popup.js
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.cmd == 'reload') location.reload();
 });

@@ -1,0 +1,107 @@
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  // console.log('message!');
+  // if (request.cmd && request.cmd === 'getMeta') {
+  //   sendResponse({
+  //     url: sender.url.match(urlRegX)[1],
+  //     isBlacklisted: true,
+  //     extDisabled: extDisabled
+  //     // extDisabled: extDisabled
+  //   });
+  // }
+  // else if (request.cmd && request.cmd === "setState") {
+  //   request.opt === 'globalEnabled' ? extDisabled = false : extDisabled = true;
+  //   sendResponse({})
+  // }
+  
+// });
+
+
+
+
+// if (request.cmd && request.cmd === "getPopupInfo") {
+  //   var contentGetUrl = function(tabs) {
+  //     chrome.tabs.sendMessage(tabs[0].id, {cmd: 'getUrl'}, function(response) {});
+  //   }
+  //   chrome.tabs.query({active: true, currentWindow: true}, contentGetUrl);
+  // }
+
+
+
+
+// chrome.runtime.onConnect.addListener(function(port){
+//   console.log('port name ', port.name);
+//   var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b)*(\/[\/\d\w\.-]*)*(?:[\?])*(.+)*/;
+//   var site = port.sender.url.match(urlRegX)[1]
+//   if (extDisabled) {
+//     port.postMessage({isBlacklisted: false}); 
+//   } else if (blacklist.indexOf(site) !== -1) {
+//     port.postMessage({isBlacklisted: true}); 
+//   } else {
+//     port.postMessage({isBlacklisted: false}); 
+//   }
+// });
+
+// Long lived connection to ContentJS
+// chrome.runtime.onConnect.addListener(function(port){
+//   console.log(port);
+//   port.postMessage({})
+// });
+
+
+// chrome.runtime.sendMessage({cmd: 'getMeta'}, function(response) {
+//   console.log('content', response);
+//   url = response.url;
+//   isBlacklisted = response.isBlacklisted;
+//   extDisabled = response.extDisabled;
+//   if (!response.isBlacklisted) preflightInjections();
+// });
+
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+//   if (request.cmd && request.cmd === 'getOptions') {
+//     sendResponse({
+//       url: url,
+//       isBlacklisted: isBlacklisted,
+//       extDisabled: extDisabled
+//     });
+//   } 
+// });
+
+
+// var port = chrome.runtime.connect({name:"content-sync"});
+// port.onMessage.addListener(function(message,sender){
+//   console.log(message);
+// });
+
+
+
+
+// debug.innerText = JSON.stringify(response);
+// var txt = Math.floor(Math.random()*100);
+
+
+
+
+// chrome.runtime.sendMessage({cmd: 'getPopupInfo'}, function(response) {
+//   debug.innerText = JSON.stringify(response)
+// });
+
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+//   debug.innerText = JSON.stringify(request)
+// });
+
+//This line opens up a long-lived connection to your background page.
+// var port = chrome.runtime.connect({name:"content-sync"});
+// port.onMessage.addListener(function(message,sender){
+//   console.log(message.isBlacklisted);
+// });
+
+// chrome.runtime.sendMessage({id: 'content'}, function(response) {
+//   // debug.innerText = JSON.stringify(response)
+//   debug.innerText = JSON.stringify(response)
+// });
+
+
+  // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    // activeTab = tabs[0].id;
+    // can we move this out of the query getter?
+  // });
