@@ -35,6 +35,35 @@ var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b
 
 
 
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  // console.log('message!');
+  // if (request.cmd && request.cmd === 'getMeta') {
+  //   sendResponse({
+  //     url: sender.url.match(urlRegX)[1],
+  //     isBlacklisted: true,
+  //     extDisabled: extDisabled
+  //     // extDisabled: extDisabled
+  //   });
+  // }
+  // else if (request.cmd && request.cmd === "setState") {
+  //   request.opt === 'globalEnabled' ? extDisabled = false : extDisabled = true;
+  //   sendResponse({})
+  // }
+  
+// });
+
+
+
+
+// if (request.cmd && request.cmd === "getPopupInfo") {
+  //   var contentGetUrl = function(tabs) {
+  //     chrome.tabs.sendMessage(tabs[0].id, {cmd: 'getUrl'}, function(response) {});
+  //   }
+  //   chrome.tabs.query({active: true, currentWindow: true}, contentGetUrl);
+  // }
+
+
+
 
 // chrome.runtime.onConnect.addListener(function(port){
 //   console.log('port name ', port.name);
@@ -49,21 +78,21 @@ var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b
 //   }
 // });
 
+// Long lived connection to ContentJS
+// chrome.runtime.onConnect.addListener(function(port){
+//   console.log(port);
+//   port.postMessage({})
+// });
+
+// One-Off Messages from PopupJS
 
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.cmd && request.cmd === 'getMeta') {
-    sendResponse({
-      url: sender.url.match(urlRegX)[1],
-      isBlacklisted: true,
-      extDisabled: true
-      // extDisabled: extDisabled
-    });
+  if (request.cmd == 'informContentJs') {
+    sendResponse({extDisabled: extDisabled});
+  } else if (request.cmd == 'informPopupJs') {
+    sendResponse({extDisabled: extDisabled});
+  } else if (request.cmd == 'setState') {
+    console.log('SETSTATE');
   }
-  // if (request.cmd && request.cmd === "getPopupInfo") {
-  //   var contentGetUrl = function(tabs) {
-  //     chrome.tabs.sendMessage(tabs[0].id, {cmd: 'getUrl'}, function(response) {});
-  //   }
-  //   chrome.tabs.query({active: true, currentWindow: true}, contentGetUrl);
-  // }
 });

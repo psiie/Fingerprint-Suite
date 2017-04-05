@@ -176,23 +176,36 @@ function preflightInjections() {
 
 
 
-var url, isBlacklisted, extDisabled;
-chrome.runtime.sendMessage({cmd: 'getMeta'}, function(response) {
-  console.log('content', response);
-  url = response.url;
-  isBlacklisted = response.isBlacklisted;
+
+// chrome.runtime.sendMessage({cmd: 'getMeta'}, function(response) {
+//   console.log('content', response);
+//   url = response.url;
+//   isBlacklisted = response.isBlacklisted;
+//   extDisabled = response.extDisabled;
+//   if (!response.isBlacklisted) preflightInjections();
+// });
+
+// chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+//   if (request.cmd && request.cmd === 'getOptions') {
+//     sendResponse({
+//       url: url,
+//       isBlacklisted: isBlacklisted,
+//       extDisabled: extDisabled
+//     });
+//   } 
+// });
+
+
+var url, 
+    isBlacklisted, 
+    extDisabled;
+
+// var port = chrome.runtime.connect({name:"content-sync"});
+// port.onMessage.addListener(function(message,sender){
+//   console.log(message);
+// });
+
+chrome.runtime.sendMessage({cmd: 'informContentJs'}, function(response) {
   extDisabled = response.extDisabled;
-  if (!response.isBlacklisted) preflightInjections();
-});
-
-
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.cmd && request.cmd === 'getOptions') {
-    sendResponse({
-      url: url,
-      isBlacklisted: isBlacklisted,
-      extDisabled: extDisabled
-    });
-  }
+  console.log(response);
 });
