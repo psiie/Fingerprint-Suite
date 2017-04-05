@@ -2,34 +2,33 @@ document.addEventListener('DOMContentLoaded', function() {
   var debug = document.getElementById('debug');
   var blacklistBtn = document.getElementById('blacklist');
   var pauseBtn = document.getElementById('pause');
+  var pageDisabled = false;
   var extDisabled = false;
-  // var activeTab;
+  var activeTab;
   
 
   // ------------------ Set Initial Conditions ------------------ //
-  // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  //   chrome.tabs.sendMessage(tabs[0].id, {cmd: 'getOptions'}, function(response) {
-  //     if (response && response.isBlacklisted) {
-  //       blacklistBtn.innerText = 'Disabled on this Domain';
-  //       blacklistBtn.classList.remove('success');
-  //       blacklistBtn.classList.add('alert');
-  //     }
-  //     if (response && response.extDisabled) {
-  //       extDisabled = true;
-  //       pauseBtn.classList.remove('secondary');
-  //       pauseBtn.classList.add('alert');
-  //       pauseBtn.innerText = 'Disabled Globally';
-  //       blacklistBtn.classList.remove('success', 'alert');
-  //       blacklistBtn.classList.add('disabled');
-  //     }
-  //   });
-  // });
-
-
-  chrome.runtime.sendMessage({cmd: 'informPopupJs'}, function(response) {
-    debug.innerText = JSON.stringify(response);
-    // set initial conditions here
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    activeTab = tabs[0].id;
+    chrome.tabs.sendMessage(activeTab, {cmd: 'getOptions'}, function(response) {
+      if (response && response.isBlacklisted) {
+        blacklistBtn.innerText = 'Disabled on this Domain';
+        blacklistBtn.className = 'button alert';
+      }
+      if (response && response.extDisabled) {
+        extDisabled = true;
+        pauseBtn.innerText = 'Disabled Globally';
+        pauseBtn.className = 'button alert';
+        blacklistBtn.className = 'button disabled strike';
+      }
+    });
   });
+
+
+  // chrome.runtime.sendMessage({cmd: 'informPopupJs'}, function(response) {
+  //   debug.innerText = JSON.stringify(response);
+  //   // set initial conditions here
+  // });
 
 
 
@@ -41,32 +40,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
   pauseBtn.addEventListener('click', function() {
     var send;
-    if (extDisabled) {
-      // Plugin is enabled
+    if (extDisabled) { // Plugin is enabled
       extDisabled = false;
       pauseBtn.innerText = 'Enabled Globally';
-      pauseBtn.classList.remove('alert');
-      pauseBtn.classList.add('secondary');
-      blacklistBtn.classList.remove('disabled');
+      pauseBtn.className = 'button secondary';
+      blacklistBtn.classList.remove('disabled', 'strike');
       send = 'globalEnabled';
-    } else {
-      // Plugin is disabled
+    } else { // Plugin is disabled
       extDisabled = true;
       pauseBtn.innerText = 'Disabled Globally';
-      pauseBtn.classList.remove('secondary');
-      pauseBtn.classList.add('alert');
-      blacklistBtn.classList.add('disabled');
+      pauseBtn.className= 'button alert'
+      blacklistBtn.classList.add('disabled', 'strike');
       send = 'globalDisabled';
     }
 
     chrome.runtime.sendMessage({cmd: 'setState', opt: send}, function(response) {
-      debug.innerText = JSON.stringify(response)
       if (response.cmd == 'readyToReload') {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, {cmd: 'reload'}, function(response) {
-            debug.innerText = 'sent reload request';
-            window.close();
-          });
+        chrome.tabs.sendMessage(activeTab, {cmd: 'reload'}, function(response) {
+          // debug.innerText = 'sent reload request';
+          // window.close();
+          // location.reload();
         });
       }
 
@@ -81,3 +74,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 });
+        // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        // });

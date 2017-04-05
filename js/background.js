@@ -37,8 +37,8 @@ var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'informContentJs') {
     sendResponse({extDisabled: extDisabled});
-  } else if (request.cmd == 'informPopupJs') {
-    sendResponse({extDisabled: extDisabled});
+  // } else if (request.cmd == 'informPopupJs') {
+  //   sendResponse({extDisabled: extDisabled});
   } else if (request.cmd == 'setState') {
     sendResponse({cmd: 'readyToReload'});
   }

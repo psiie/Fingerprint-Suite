@@ -188,4 +188,8 @@ chrome.runtime.sendMessage({cmd: 'informContentJs'}, function(response) {
 // Reload on change from Popup.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'reload') location.reload();
+  if (request.cmd == 'getOptions') sendResponse({
+    isBlacklisted: isBlacklisted, 
+    extDisabled: true
+  });
 });
