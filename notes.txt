@@ -105,3 +105,10 @@
     // activeTab = tabs[0].id;
     // can we move this out of the query getter?
   // });
+
+
+  chrome.browserAction.setIcon({
+    path: {48: 'img/48x48-grey.png'}
+  });
+
+  

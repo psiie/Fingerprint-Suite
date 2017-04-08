@@ -32,14 +32,25 @@ var extDisabled = false;
 var blacklist = ['startpage.com']; // move to db later
 var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b)*(\/[\/\d\w\.-]*)*(?:[\?])*(.+)*/;
 
-
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'informContentJs') {
     sendResponse({extDisabled: extDisabled});
   } else if (request.cmd == 'setState') {
     if (request.opt == 'globalDisabled') {
       extDisabled = true;
+      chrome.browserAction.setIcon({
+        path: {48: 'img/48x48-grey.png'}
+      });
+      console.log('disabled ', extDisabled);
+    } else if (request.opt == 'globalEnabled') {
+      extDisabled = false;
+      chrome.browserAction.setIcon({
+        path: {
+          16: 'img/16x16.png',
+          48: 'img/48x48-grey.png',
+          128: 'img/128x128.png'
+        }
+      });
       console.log('disabled ', extDisabled);
     }
     // console.log(request.opt);

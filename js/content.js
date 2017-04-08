@@ -182,12 +182,12 @@ var url,
 // Get informed from background.js as to if this page is blacklisted
 chrome.runtime.sendMessage({cmd: 'informContentJs'}, function(response) {
   extDisabled = response.extDisabled;
-  console.log(response);
+  if (!extDisabled) preflightInjections();
 });
 
 // Reload on change from Popup.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.cmd == 'reload') location.reload();
+  if (request.cmd == 'reload') setTimeout("location.reload();", 1000);
   if (request.cmd == 'getOptions') sendResponse({
     isBlacklisted: isBlacklisted, 
     extDisabled: extDisabled
