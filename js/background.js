@@ -31,50 +31,61 @@ function replaceAgent(req) {
 var extDisabled = false;
 var blacklist = ['startpage.com']; // move to db later
 var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b)*(\/[\/\d\w\.-]*)*(?:[\?])*(.+)*/;
+var blacklistSites = [];
 
+// set blacklistSites on start
+// chrome.storage.local.get(null, function(obj) {
+//   console.log(obj);
+//   for (var key in obj) {
+//     if (obj[key] == true) blacklistSites.push(key);
+//   }
+// });
+
+// Wait for messages from the popupjs and contentjs
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'informContentJs') {
     sendResponse({extDisabled: extDisabled});
-  } else if (request.cmd == 'setState') {
+  } 
+  else if (request.cmd == 'setState') {
+    
     if (request.opt == 'globalDisabled') {
       extDisabled = true;
-      chrome.browserAction.setIcon({
-        path: {48: 'img/48x48-grey.png'}
-      });
       console.log('disabled ', extDisabled);
-    } else if (request.opt == 'globalEnabled') {
+      chrome.browserAction.setIcon({path: {
+        48: 'img/48x48-grey.png'
+      }});
+    } 
+    else if (request.opt == 'globalEnabled') {
       extDisabled = false;
-      chrome.browserAction.setIcon({
-        path: {
-          16: 'img/16x16.png',
-          48: 'img/48x48-grey.png',
-          128: 'img/128x128.png'
-        }
-      });
       console.log('disabled ', extDisabled);
+      chrome.browserAction.setIcon({path: {
+        16: 'img/16x16.png',
+        48: 'img/48x48-grey.png',
+        128: 'img/128x128.png'
+      }});
     }
-    // console.log(request.opt);
-    // switch (request.opt) {
-    //   case 'globalEnabled':
-    //     extDisabled = false;
-    //     console.log('Enabled'. extDisabled);
-    //     break;
-    //   case 'globalDisabled':
-    //     extDisabled = true;
-    //     console.log('Disabled'. extDisabled);
-    //     break;
-    //   case 'pageEnabled':
-    //     break;
-    //   case 'pageDisabled':
-    //     break;
-    // }
+    else if (request.opt == 'pageDisabled') {
+      // Add page to local blacklistSites var
+      // Add page to localstorage if not in it
+    }
+    else if (request.opt == 'pageEnabled') {
+      // remove page from local blacklistSites var
+      // remove page from localstorage if not in it
+    }
+
     sendResponse({cmd: 'readyToReload'});
   }
 });
 
 
+// chrome.storage.local.clear(function() {console.log('local storage cleared');});
 
 
+// chrome.storage.local.set({'extDisabled': 'true'}, function() {
+//   console.log('extDis saved as disabled');
+//   // message('test')
+// });
 
-  // } else if (request.cmd == 'informPopupJs') {
-  //   sendResponse({extDisabled: extDisabled});
+// chrome.storage.local.get(null, function(obj) {
+//   console.log(obj);
+// })
