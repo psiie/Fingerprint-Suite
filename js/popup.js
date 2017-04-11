@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     activeTab = tabs[0].id;
     chrome.tabs.sendMessage(activeTab, {cmd: 'getOptions'}, function(response) {
-      if (response && response.isBlacklisted) {
+      if (response && response.siteDisabed) {
         blacklistBtn.innerText = 'Disabled on this Domain';
         blacklistBtn.className = 'button alert';
       }
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         pauseBtn.className = 'button alert';
         blacklistBtn.className = 'button disabled strike';
       }
-      debug.innerText = pageDisabled + ' ' + extDisabled
+      debug.innerText = pageDisabled + ' ' + extDisabled;
     });
   });
 
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } else { // Plugin is disabled
       extDisabled = true;
       pauseBtn.innerText = 'Disabled Globally';
-      pauseBtn.className= 'button alert'
+      pauseBtn.className= 'button alert';
       blacklistBtn.classList.add('disabled', 'strike');
       send = 'globalDisabled';
     }

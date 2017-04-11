@@ -22,7 +22,7 @@ function replaceAgent(req) {
     //   req.requestHeaders[i].value = '';
     // } 
   }
-  return { requestHeaders: req.requestHeaders}
+  return { requestHeaders: req.requestHeaders};
 }
 
 // -------------------------------------------------------------------------- //
@@ -31,20 +31,27 @@ function replaceAgent(req) {
 var extDisabled = false;
 var blacklist = ['startpage.com']; // move to db later
 var urlRegX = /https?:\/\/(?:www\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b)*(\/[\/\d\w\.-]*)*(?:[\?])*(.+)*/;
-var blacklistSites = [];
+var storage = {};
+// var blacklistSites = [];
 
-// set blacklistSites on start
-// chrome.storage.local.get(null, function(obj) {
-//   console.log(obj);
-//   for (var key in obj) {
-//     if (obj[key] == true) blacklistSites.push(key);
-//   }
-// });
+// chrome.storage.local.clear(function() {console.log('local storage cleared');});
+
+// Get information from chrome storage. Initialize if needed
+chrome.storage.local.get(null, function(obj) {
+  storage = obj;
+  if (!storage.hasOwnProperty('sites')) storage.sites = {};
+  if (!storage.hasOwnProperty('extDisabled')) storage.extDisabled = extDisabled;
+  console.log('saved keys', storage);
+});
 
 // Wait for messages from the popupjs and contentjs
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log('here', sender.url);
+  var uri = sender.url.match(urlRegX);
+
   if (request.cmd == 'informContentJs') {
-    sendResponse({extDisabled: extDisabled});
+    var siteDisabled = storage.sites[uri[1]] || '';
+    sendResponse({extDisabled: extDisabled, siteDisabled: siteDisabled});
   } 
   else if (request.cmd == 'setState') {
     
@@ -65,27 +72,37 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       }});
     }
     else if (request.opt == 'pageDisabled') {
-      // Add page to local blacklistSites var
-      // Add page to localstorage if not in it
+      console.log('about to save ', uri);
+      storage.sites[uri] = true;
     }
     else if (request.opt == 'pageEnabled') {
-      // remove page from local blacklistSites var
-      // remove page from localstorage if not in it
+      if (storage.sites.hasOwnProperty(uri)) {
+        delete storage.sites[uri];
+      }
     }
 
+    // SAve DB
+    chrome.storage.local.set(storage, function() {
+      console.log('saved storage');
+    });
+
+    // Reload page
     sendResponse({cmd: 'readyToReload'});
   }
 });
 
 
-// chrome.storage.local.clear(function() {console.log('local storage cleared');});
 
 
-// chrome.storage.local.set({'extDisabled': 'true'}, function() {
-//   console.log('extDis saved as disabled');
-//   // message('test')
-// });
 
 // chrome.storage.local.get(null, function(obj) {
 //   console.log(obj);
 // })
+
+// chrome.storage.local.set({'extDisabled': extDisabled, sites: {}}, function() {
+//   console.log('Initialized localstorage');
+// });
+
+// for (var key in obj) {
+//   if (obj[key] == true) blacklistSites.push(key);
+// }

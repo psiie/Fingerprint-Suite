@@ -8,7 +8,7 @@ function injectFunc(func) {
 function preflightInjections() {
   injectFunc(function(){
     // Timezone Spoofer
-    window.Date.prototype.getTimezoneOffset = function() {return 300;}
+    window.Date.prototype.getTimezoneOffset = function() {return 300};
 
     // OS Platform Spoofer, Screen Size Spoofer & Plugin Hider
     var fakePlatformGetter = function () {return "Win32"};
@@ -28,8 +28,8 @@ function preflightInjections() {
         },
         pixelDepth: 24,
         width: 1920
-      }
-    }
+      };
+    };
 
     if (Object.defineProperty) {
       Object.defineProperty(navigator, "platform", {get: fakePlatformGetter});
@@ -49,10 +49,10 @@ function preflightInjections() {
      window.ogcctxfunc8675309 = HTMLCanvasElement.prototype.getContext;
      HTMLCanvasElement.prototype.getContext = function (a, b) {
       if (a.toLowerCase().indexOf("webgl") >= 0) return null;
-      if (b) {return window.ogcctxfunc8675309.call(this, a, b)} 
-        else {return window.ogcctxfunc8675309.call(this, a)}
+      if (b) {return window.ogcctxfunc8675309.call(this, a, b)}
+      else {return window.ogcctxfunc8675309.call(this, a)}
       };
-    };
+    }
   });
 
   // Canvas Fingerprint Disabler
@@ -175,21 +175,22 @@ function preflightInjections() {
 }
 
 var url, 
-    isBlacklisted, 
+    siteDisabled, 
     extDisabled;
 
 
 // Get informed from background.js as to if this page is blacklisted
 chrome.runtime.sendMessage({cmd: 'informContentJs'}, function(response) {
   extDisabled = response.extDisabled;
-  if (!extDisabled) preflightInjections();
+  siteDisabled = response.siteDisabled;
+  if (!extDisabled && !siteDisabled) preflightInjections();
 });
 
 // Reload on change from Popup.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'reload') setTimeout("location.reload();", 1000);
   if (request.cmd == 'getOptions') sendResponse({
-    isBlacklisted: isBlacklisted, 
+    siteDisabled: siteDisabled, 
     extDisabled: extDisabled
   });
 });
