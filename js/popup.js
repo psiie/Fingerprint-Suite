@@ -5,13 +5,18 @@ document.addEventListener('DOMContentLoaded', function() {
   var pageDisabled = false;
   var extDisabled = false;
   var activeTab;
+  var url;
   
 
   // ------------------ Set Initial Conditions ------------------ //
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     activeTab = tabs[0].id;
     chrome.tabs.sendMessage(activeTab, {cmd: 'getOptions'}, function(response) {
-      if (response && response.siteDisabed) {
+      
+      debug.innerText = 'got info';
+      if (response && response.siteDisabled) {
+        debug.innerText = 'true';
+        pageDisabled = true;
         blacklistBtn.innerText = 'Disabled on this Domain';
         blacklistBtn.className = 'button alert';
       }
@@ -21,7 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
         pauseBtn.className = 'button alert';
         blacklistBtn.className = 'button disabled strike';
       }
-      debug.innerText = pageDisabled + ' ' + extDisabled;
+      if (response && response.url) {
+        url = response.url;
+        // debug.innerText = url;
+      }
+      // debug.innerText = pageDisabled + ' ' + extDisabled;
     });
   });
 
@@ -39,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var send;
     // var btnDisabled = blacklistBtn.classList.contains('disabled');
     // if (!btnDisabled) {
+      debug.innerText = pageDisabled
       if (pageDisabled) { // Page is enabled
         pageDisabled = false;
         blacklistBtn.innerText = 'Running on this Domain';
@@ -70,13 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
       send = 'globalDisabled';
     }
     sendUpdate(send);
-
-
   });
 
 
 function sendUpdate(message) {
-  chrome.runtime.sendMessage({cmd: 'setState', opt: message}, function(response) {
+  chrome.runtime.sendMessage({cmd: 'setState', opt: message, url: url}, function(response) {
     if (response.cmd == 'readyToReload') {
       chrome.tabs.sendMessage(activeTab, {cmd: 'reload'}, function(response) {
         // window.close();

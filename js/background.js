@@ -46,14 +46,19 @@ chrome.storage.local.get(null, function(obj) {
 
 // Wait for messages from the popupjs and contentjs
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log('here', sender.url);
-  var uri = sender.url.match(urlRegX);
+  var domain;
+  if (request.url) {
+    domain = request.url.match(urlRegX);
+    domain = domain.length > 1 ? domain[1] : '';
+  }
 
   if (request.cmd == 'informContentJs') {
-    var siteDisabled = storage.sites[uri[1]] || '';
+    var siteDisabled = storage.sites[domain];
     sendResponse({extDisabled: extDisabled, siteDisabled: siteDisabled});
   } 
   else if (request.cmd == 'setState') {
+    var uri;
+    console.log('req opt ', request.opt);
     
     if (request.opt == 'globalDisabled') {
       extDisabled = true;
@@ -72,18 +77,26 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       }});
     }
     else if (request.opt == 'pageDisabled') {
+      uri = request.url.match(urlRegX);
       console.log('about to save ', uri);
-      storage.sites[uri] = true;
-    }
-    else if (request.opt == 'pageEnabled') {
-      if (storage.sites.hasOwnProperty(uri)) {
-        delete storage.sites[uri];
+      if (uri && uri.length > 1) {
+        console.log('about to store site');
+        storage.sites[uri[1]] = true;
       }
     }
+    else if (request.opt == 'pageEnabled') {
+      console.log('inside 1');
+      uri = request.url.match(urlRegX);
+      // if (storage.sites.hasOwnProperty(uri)) {
+      console.log('deleted1');
+      storage.sites[domain] = false;
+      console.log('deleted2', storage.sites);
+      // }
+    }
 
-    // SAve DB
+    // Save DB
     chrome.storage.local.set(storage, function() {
-      console.log('saved storage');
+      console.log('saved storage', storage);
     });
 
     // Reload page

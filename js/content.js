@@ -180,17 +180,19 @@ var url,
 
 
 // Get informed from background.js as to if this page is blacklisted
-chrome.runtime.sendMessage({cmd: 'informContentJs'}, function(response) {
+chrome.runtime.sendMessage({cmd: 'informContentJs', url: window.location.href}, function(response) {
   extDisabled = response.extDisabled;
   siteDisabled = response.siteDisabled;
   if (!extDisabled && !siteDisabled) preflightInjections();
+  console.log('state: ', extDisabled, siteDisabled);
 });
 
 // Reload on change from Popup.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.cmd == 'reload') setTimeout("location.reload();", 1000);
+  if (request.cmd == 'reload') setTimeout("location.reload();", 2000);
   if (request.cmd == 'getOptions') sendResponse({
     siteDisabled: siteDisabled, 
-    extDisabled: extDisabled
+    extDisabled: extDisabled,
+    url: window.location.href
   });
 });
