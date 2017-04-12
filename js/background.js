@@ -42,7 +42,14 @@ chrome.storage.local.get(null, function(obj) {
   if (!storage.hasOwnProperty('sites')) storage.sites = {};
   if (!storage.hasOwnProperty('extDisabled')) storage.extDisabled = extDisabled;
   console.log('saved keys', storage);
+  
+  // On load, clear out sites that are enabled again
+  cleanStorage();
 });
+
+
+
+
 
 // Wait for messages from the popupjs and contentjs
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -55,7 +62,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'informContentJs') {
     var siteDisabled = storage.sites[domain];
     sendResponse({extDisabled: extDisabled, siteDisabled: siteDisabled});
-  } 
+  }
   else if (request.cmd == 'setState') {
     var uri;
     console.log('req opt ', request.opt);
@@ -95,9 +102,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 
     // Save DB
-    chrome.storage.local.set(storage, function() {
-      console.log('saved storage', storage);
-    });
+    saveDB();
 
     // Reload page
     sendResponse({cmd: 'readyToReload'});
@@ -106,7 +111,24 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 
 
+function saveDB() {
+  chrome.storage.local.set(storage, function() {
+    console.log('saved storage', storage);
+  });
+}
 
+function cleanStorage() {
+  var changesMade = false;
+  console.log('STORAGE: ', storage.sites);
+  for (var site in storage.sites) {
+    if (storage.sites[site] === false) {
+      delete storage.sites[site];
+      changesMade = true;
+    }
+  }
+  console.log('FINISHED: ', storage.sites);
+  if (changesMade) saveDB();
+}
 
 // chrome.storage.local.get(null, function(obj) {
 //   console.log(obj);
