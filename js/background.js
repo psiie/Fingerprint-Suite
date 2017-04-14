@@ -54,11 +54,12 @@ chrome.storage.local.get(null, function(obj) {
 // Wait for messages from the popupjs and contentjs
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var domain;
+  var regX = /(?:http[s]*\:\/\/)*.*?\.(?=([^\/]*\..{2,5}))/i;
+
   if (request.url) {
-    domain = request.url;
+    var domainParse = request.url.match(regX);
+    domain = domainParse ? domainParse[1] : request.url;
     console.log('line59: ', domain);
-    // domain = request.url.match(urlRegX);
-    // domain = domain.length > 1 ? domain[1] : '';
   }
 
   if (request.cmd == 'informContentJs') {
@@ -66,7 +67,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     sendResponse({extDisabled: extDisabled, siteDisabled: siteDisabled});
   }
   else if (request.cmd == 'setState') {
-    var uri;
     console.log('req opt ', request.opt);
     
     if (request.opt == 'globalDisabled') {
@@ -86,22 +86,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       }});
     }
     else if (request.opt == 'pageDisabled') {
-      // uri = request.url;
       console.log('pd ', domain);
-      // uri = request.url.match(urlRegX);
-      console.log('about to save ', domain);
       if (domain && domain.length > 1) {
         console.log('about to store site');
-        // storage.sites[uri[1]] = true;
         storage.sites[domain] = true;
       }
     }
     else if (request.opt == 'pageEnabled') {
-      // uri = request.url;
       console.log('pe ', domain);
-      // uri = request.url.match(urlRegX);
-      // if (storage.sites.hasOwnProperty(uri)) {
-      console.log('deleted1');
       storage.sites[domain] = false;
       console.log('deleted2', storage.sites);
       // }
