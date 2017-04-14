@@ -1,10 +1,10 @@
-// -------------------------------------------------------------------------- //
-//                         Replace User Agent                                 //
-// -------------------------------------------------------------------------- //
-
 var userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36';
+var regX = /(?:http[s]*\:\/\/)*.*?\.(?=([^\/]*\..{2,5}))/i;
+var extDisabled = false;
+var storage = {};
 
 function replaceAgent(req) {
+  if (extDisabled) return;
   for (var i=0; i<req.requestHeaders.length; i++) {
     if (req.requestHeaders[i].name == 'User-Agent') {
       req.requestHeaders[i].value = userAgent;
@@ -14,26 +14,12 @@ function replaceAgent(req) {
     }
     // Disabled because this causes cross-origin issues for some reason
     // eg: drive.google.com
-    // else if (req.requestHeaders[i].name == 'Referer') {
-    //   req.requestHeaders[i].value = '';
-    // } 
+    else if (req.requestHeaders[i].name == 'Referer') {
+      req.requestHeaders[i].value = '';
+    } 
   }
   return { requestHeaders: req.requestHeaders};
 }
-
-chrome.webRequest.onBeforeSendHeaders.addListener(replaceAgent, {
-    "urls": ["<all_urls>"] // , "types": requestTypes
-  }, ['requestHeaders', 'blocking']
-);
-
-
-
-// -------------------------------------------------------------------------- //
-//                          Blacklist Check                                   //
-// -------------------------------------------------------------------------- //
-var extDisabled = false;
-var regX = /(?:http[s]*\:\/\/)*.*?\.(?=([^\/]*\..{2,5}))/i;
-var storage = {};
 
 function saveDB() {
   chrome.storage.local.set(storage, function() {
@@ -54,19 +40,13 @@ function cleanStorage() {
   if (changesMade) saveDB();
 }
 
+function clearStorage() {
+  chrome.storage.local.clear(function() {
+    console.log('local storage cleared');
+  });
+}
 
-// chrome.storage.local.clear(function() {console.log('local storage cleared');});
-
-// Get information from chrome storage. Initialize if needed
-chrome.storage.local.get(null, function(obj) {
-  storage = obj;
-  if (!storage.hasOwnProperty('sites')) storage.sites = {};
-  if (!storage.hasOwnProperty('extDisabled')) storage.extDisabled = extDisabled;
-  cleanStorage();
-});
-
-// Wait for messages from the popupjs and contentjs
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+function onMessage(request, sender, sendResponse) {
   var domain = '';
   
   if (request.url) {
@@ -108,20 +88,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     // Reload page
     sendResponse({cmd: 'readyToReload'});
   }
-});
+}
 
+function init() {
+  var onBeforeSendOpts = {"urls": ["<all_urls>"]};
+  var getStorageCB = function(obj) {
+    storage = obj;
+    if (!storage.hasOwnProperty('sites')) storage.sites = {};
+    if (!storage.hasOwnProperty('extDisabled')) storage.extDisabled = extDisabled;
+    cleanStorage();
+  }
 
+  chrome.runtime.onMessage.addListener(onMessage);
+  chrome.webRequest.onBeforeSendHeaders.addListener(replaceAgent, onBeforeSendOpts, ['requestHeaders', 'blocking']);
+  chrome.storage.local.get(null, getStorageCB);
+}
 
-
-
-// chrome.storage.local.get(null, function(obj) {
-//   console.log(obj);
-// })
-
-// chrome.storage.local.set({'extDisabled': extDisabled, sites: {}}, function() {
-//   console.log('Initialized localstorage');
-// });
-
-// for (var key in obj) {
-//   if (obj[key] == true) blacklistSites.push(key);
-// }
+init();
