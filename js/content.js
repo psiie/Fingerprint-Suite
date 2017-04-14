@@ -174,10 +174,8 @@ function preflightInjections() {
     });
 }
 
-var url, 
-    siteDisabled, 
+var siteDisabled, 
     extDisabled;
-
 
 // Get informed from background.js as to if this page is blacklisted
 chrome.runtime.sendMessage({cmd: 'informContentJs', url: window.location.hostname}, function(response) {
