@@ -87,7 +87,7 @@ function sendUpdate(message) {
   chrome.runtime.sendMessage({cmd: 'setState', opt: message, url: url}, function(response) {
     if (response.cmd == 'readyToReload') {
       chrome.tabs.sendMessage(activeTab, {cmd: 'reload'}, function(response) {
-        // window.close();
+        window.close();
         // location.reload();
       });
     }

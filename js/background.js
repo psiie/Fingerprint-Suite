@@ -55,8 +55,10 @@ chrome.storage.local.get(null, function(obj) {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var domain;
   if (request.url) {
-    domain = request.url.match(urlRegX);
-    domain = domain.length > 1 ? domain[1] : '';
+    domain = request.url;
+    console.log('line59: ', domain);
+    // domain = request.url.match(urlRegX);
+    // domain = domain.length > 1 ? domain[1] : '';
   }
 
   if (request.cmd == 'informContentJs') {
@@ -84,16 +86,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       }});
     }
     else if (request.opt == 'pageDisabled') {
-      uri = request.url.match(urlRegX);
-      console.log('about to save ', uri);
-      if (uri && uri.length > 1) {
+      // uri = request.url;
+      console.log('pd ', domain);
+      // uri = request.url.match(urlRegX);
+      console.log('about to save ', domain);
+      if (domain && domain.length > 1) {
         console.log('about to store site');
-        storage.sites[uri[1]] = true;
+        // storage.sites[uri[1]] = true;
+        storage.sites[domain] = true;
       }
     }
     else if (request.opt == 'pageEnabled') {
-      console.log('inside 1');
-      uri = request.url.match(urlRegX);
+      // uri = request.url;
+      console.log('pe ', domain);
+      // uri = request.url.match(urlRegX);
       // if (storage.sites.hasOwnProperty(uri)) {
       console.log('deleted1');
       storage.sites[domain] = false;

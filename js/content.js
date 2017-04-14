@@ -180,7 +180,7 @@ var url,
 
 
 // Get informed from background.js as to if this page is blacklisted
-chrome.runtime.sendMessage({cmd: 'informContentJs', url: window.location.href}, function(response) {
+chrome.runtime.sendMessage({cmd: 'informContentJs', url: window.location.hostname}, function(response) {
   extDisabled = response.extDisabled;
   siteDisabled = response.siteDisabled;
   if (!extDisabled && !siteDisabled) preflightInjections();
@@ -193,6 +193,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'getOptions') sendResponse({
     siteDisabled: siteDisabled, 
     extDisabled: extDisabled,
-    url: window.location.href
+    url: window.location.hostname
   });
 });
