@@ -82,15 +82,3 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
 });
-
-
-
-
-// chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-// });
-
-
- // chrome.runtime.sendMessage({cmd: 'informPopupJs'}, function(response) {
-  //   debug.innerText = JSON.stringify(response);
-  //   // set initial conditions here
-  // });

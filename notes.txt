@@ -124,3 +124,14 @@
 // for (var key in obj) {
 //   if (obj[key] == true) blacklistSites.push(key);
 // }
+
+
+
+// chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+// });
+
+
+ // chrome.runtime.sendMessage({cmd: 'informPopupJs'}, function(response) {
+  //   debug.innerText = JSON.stringify(response);
+  //   // set initial conditions here
+  // });

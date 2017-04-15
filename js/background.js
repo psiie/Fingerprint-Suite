@@ -2,6 +2,16 @@ var userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (K
 var regX = /(?:http[s]*\:\/\/)*.*?\.(?=([^\/]*\..{2,5}))/i;
 var extDisabled = false;
 var storage = {};
+var icons = {
+  disabled: {
+    48: 'img/48x48-grey.png'
+  },
+  enabled: {
+    16: 'img/16x16.png',
+    48: 'img/48x48-grey.png',
+    128: 'img/128x128.png'
+  }
+}
 
 function replaceAgent(req) {
   if (extDisabled) return;
@@ -49,45 +59,40 @@ function clearStorage() {
 function onMessage(request, sender, sendResponse) {
   var domain = '';
   
+  function informContentJsRequest() {
+    var siteDisabled = storage.sites[domain];
+    sendResponse({extDisabled: extDisabled, siteDisabled: siteDisabled});
+  }
+
+  function setStateRequest() {
+    function setStorage(boolean) {storage.sites[domain] = boolean;}
+    function setGlobal(state) {
+      if (state === 'disabled') {
+        extDisabled = true;
+        chrome.browserAction.setIcon({path: icons.disabled});
+      } else {
+        extDisabled = false;
+        chrome.browserAction.setIcon({path: icons.enabled});
+      }
+    }
+
+    if (request.opt == 'globalDisabled') setGlobal('disabled');
+    else if (request.opt == 'globalEnabled') setGlobal('enabled');
+    else if (request.opt == 'pageDisabled' && domain && domain.length > 1) setStorage(true);
+    else if (request.opt == 'pageEnabled') setStorage(false);
+
+    saveDB();
+    sendResponse({cmd: 'readyToReload'}); // Reload page
+  }
+
   if (request.url) {
+    // Set Domain safely
     var domainParse = request.url.match(regX);
     domain = domainParse ? domainParse[1] : request.url;
   }
 
-  if (request.cmd == 'informContentJs') {
-    var siteDisabled = storage.sites[domain];
-    sendResponse({extDisabled: extDisabled, siteDisabled: siteDisabled});
-  } 
-  else if (request.cmd == 'setState') {
-    if (request.opt == 'globalDisabled') {
-      extDisabled = true;
-      chrome.browserAction.setIcon({path: {
-        48: 'img/48x48-grey.png'
-      }});
-    } 
-    else if (request.opt == 'globalEnabled') {
-      extDisabled = false;
-      chrome.browserAction.setIcon({path: {
-        16: 'img/16x16.png',
-        48: 'img/48x48-grey.png',
-        128: 'img/128x128.png'
-      }});
-    }
-    else if (request.opt == 'pageDisabled') {
-      if (domain && domain.length > 1) {
-        storage.sites[domain] = true;
-      }
-    }
-    else if (request.opt == 'pageEnabled') {
-      storage.sites[domain] = false;
-    }
-
-    // Save DB
-    saveDB();
-
-    // Reload page
-    sendResponse({cmd: 'readyToReload'});
-  }
+  if (request.cmd == 'informContentJs') informContentJsRequest(); 
+  else if (request.cmd == 'setState') setStateRequest();
 }
 
 function init() {
