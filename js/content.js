@@ -50,11 +50,6 @@ function payload() {
     HTMLCanvasElement.prototype.getContext = fakeGetContext;
   }
 
-  // Canvas Fingerprint Disabler
-  var script = document.createElement('script');
-  script.id = '1337';
-  script.type = "text/javascript";
-
   function getRandomString() {
     var text = "", charset = "abcdefghijklmnopqrstuvwxyz";
     for (var i=0; i<5; i++) text += charset.charAt(Math.floor(Math.random() * charset.length));
@@ -143,6 +138,11 @@ function payload() {
     }
   }
 
+  // Canvas Fingerprint Disabler
+  // var script = document.createElement('script');
+  // script.id = '1337';
+  // script.type = "text/javascript";
+
   overrideCanvasProto(HTMLCanvasElement);
   overrideCanvaRendProto(CanvasRenderingContext2D);
   overrideDocumentProto(Document);
@@ -163,9 +163,10 @@ var siteDisabled,
 
 // Get informed from background.js as to if this page is blacklisted
 chrome.runtime.sendMessage({cmd: 'informContentJs', url: window.location.hostname}, function(response) {
-  extDisabled = response.extDisabled;
+  extDisabled  = response.extDisabled;
   siteDisabled = response.siteDisabled;
   if (!extDisabled && !siteDisabled) injectFunc(payload);
+  
   console.log('state: ', extDisabled, siteDisabled);
 });
 
@@ -174,7 +175,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.cmd == 'reload') setTimeout("location.reload();", 2000);
   if (request.cmd == 'getOptions') sendResponse({
     siteDisabled: siteDisabled, 
-    extDisabled: extDisabled,
+    extDisabled:  extDisabled,
     url: window.location.hostname
   });
 });
