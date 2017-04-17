@@ -24,9 +24,9 @@ function replaceAgent(req) {
     }
     // Disabled because this causes cross-origin issues for some reason
     // eg: drive.google.com
-    else if (req.requestHeaders[i].name == 'Referer') {
-      req.requestHeaders[i].value = '';
-    } 
+    // else if (req.requestHeaders[i].name == 'Referer') {
+    //   req.requestHeaders[i].value = '';
+    // } 
   }
   return { requestHeaders: req.requestHeaders};
 }
