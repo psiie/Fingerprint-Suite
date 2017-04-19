@@ -56,12 +56,21 @@ function clearStorage() {
   });
 }
 
+function setIconState(isOn) {
+  if (isOn) {
+    chrome.browserAction.setIcon({path: icons.enabled});
+  } else {
+    chrome.browserAction.setIcon({path: icons.disabled});
+  }
+}
+
 function onMessage(request, sender, sendResponse) {
   var domain = '';
   
   function informContentJsRequest() {
     var siteDisabled = storage.sites[domain];
     sendResponse({extDisabled: extDisabled, siteDisabled: siteDisabled});
+    setIconState( !(extDisabled || siteDisabled) );
   }
 
   function setStateRequest() {
@@ -69,10 +78,10 @@ function onMessage(request, sender, sendResponse) {
     function setGlobal(state) {
       if (state === 'disabled') {
         extDisabled = true;
-        chrome.browserAction.setIcon({path: icons.disabled});
+        setIconState(false);
       } else {
         extDisabled = false;
-        chrome.browserAction.setIcon({path: icons.enabled});
+        setIconState(true);
       }
     }
 
@@ -97,6 +106,11 @@ function onMessage(request, sender, sendResponse) {
 
 function init() {
   var onBeforeSendOpts = {"urls": ["<all_urls>"]};
+  var onTabSwitch = function(activeInfo) {
+    chrome.tabs.sendMessage(activeInfo.tabId, {cmd: 'getOptions'}, function(response) {
+      if (response) setIconState( !(response.siteDisabled || response.extDisabled) );
+    });
+  }
   var getStorageCB = function(obj) {
     storage = obj;
     if (!storage.hasOwnProperty('sites')) storage.sites = {};
@@ -105,8 +119,11 @@ function init() {
   }
 
   chrome.runtime.onMessage.addListener(onMessage);
+  chrome.tabs.onActivated.addListener(onTabSwitch);
   chrome.webRequest.onBeforeSendHeaders.addListener(replaceAgent, onBeforeSendOpts, ['requestHeaders', 'blocking']);
   chrome.storage.local.get(null, getStorageCB);
 }
 
 init();
+
+// ----------------------------- //
