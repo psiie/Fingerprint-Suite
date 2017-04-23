@@ -3,12 +3,43 @@
   <meta charset="UTF-8">
   <script src="js/background.js"></script>
   <script src="js/popup.js"></script>
-  <link rel="stylesheet" href="css/foundation.min.css">
+  <!-- <link rel="stylesheet" href="css/foundation.min.css"> -->
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/toggles.css">
   <link rel="stylesheet" href="css/popup.css">
 </head>
 <body>
-  <a id="blacklist" class="button success">Running on this Domain</a>
-  <a id="pause" class="button secondary">Enabled Globally</a>
-  <p id="debug">Version: 1.0</p>
+  <!-- <a id="blacklist" class="button success">Running on this Domain</a> -->
+  <!-- <a id="pause" class="button secondary">Enabled Globally</a> -->
+  <!-- <p id="debug">Version: 1.0</p> -->
+  
+  <div class="row">
+    <div class="col col-9 text-container">
+      <p>This Domain</p>
+    </div>
+    <div class="col col-4">
+      <input type="checkbox" id="unchecked" class="cbx hidden"/>
+      <label for="unchecked" class="lbl"></label>    
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-9 text-container">
+      <p>Global</p>
+    </div>
+    <div class="col col-4">
+      <input type="checkbox" id="checked" class="cbx hidden" checked/>
+      <label for="checked" class="lbl"></label>
+    </div>
+  </div>
+  <!-- <div class="row">
+    <div class="col col-9 text-container">
+      <p>This Domain</p>
+    </div>
+    <div class="col col-4">
+      <input type="checkbox" id="unchecked_disabled" class="cbx hidden" disabled/>
+      <label for="unchecked_disabled" class="lbl"></label>
+    </div>
+  </div> -->
+
 </body>
 </html>
