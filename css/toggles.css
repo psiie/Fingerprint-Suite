@@ -40,12 +40,14 @@
 /* --- Checkbox States --- */
 
 .cbx:checked ~ label {
-  background: #6fbeb5;
+  background: #86d993;
+  /*background: #6fbeb5;*/
 }
 
 .cbx:checked ~ label:after {
   left: 20px;
-  background: #179588;
+  background: #63a76d;
+  /*background: #179588;*/
 }
 
 .cbx:disabled ~ label {
@@ -55,4 +57,67 @@
 
 .cbx:disabled ~ label:after {
   background: #bcbdbc;
+}
+
+/* +=========================+ */
+/* |     Global Button       | */
+/* +=========================+ */
+
+.tgl {
+  display: none;
+}
+
+.tgl + .tgl-btn {
+  outline: 0;
+  display: block;
+  /*width: 4em;*/
+  width: 100%;
+  height: 2em;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tgl-skewed + .tgl-btn {
+  overflow: hidden;
+  /*   transform: skew(-10deg); */
+  backface-visibility: hidden;
+  transition: all .2s ease;
+  font-family: sans-serif;
+  background: #888;
+}
+
+.tgl-skewed + .tgl-btn:after, .tgl-skewed + .tgl-btn:before {
+  /*   transform: skew(10deg); */
+  display: inline-block;
+  transition: all .2s ease;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  line-height: 2em;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.tgl-skewed + .tgl-btn:after {
+  left: 100%;
+  content: attr(data-tg-on);
+}
+
+.tgl-skewed + .tgl-btn:before {
+  left: 0;
+  content: attr(data-tg-off);
+}
+
+.tgl-skewed:checked + .tgl-btn {
+  background: #86d993;
+}
+
+.tgl-skewed:checked + .tgl-btn:before {
+  left: -100%;
+}
+
+.tgl-skewed:checked + .tgl-btn:after {
+  left: 0;
 }

@@ -12,34 +12,116 @@
   <!-- <a id="blacklist" class="button success">Running on this Domain</a> -->
   <!-- <a id="pause" class="button secondary">Enabled Globally</a> -->
   <!-- <p id="debug">Version: 1.0</p> -->
+  <section class="title">
+    <p>Fingerprinter 1.00.0</p>  
+  </section>
+
+  <section>
+    <div class="logo"></div>
+  </section>
+
   
-  <div class="row">
-    <div class="col col-9 text-container">
-      <p>This Domain</p>
+
+  <section class="break">
+    <p>Global Switches</p>
+  </section>
+
+
+
+  <section>
+    <div class="row">
+      <div class="col col-9 text-container">
+        <p>UserAgent</p>
+      </div>
+      <div class="col col-4">
+        <input type="checkbox" id="user-agent-tgl" class="cbx hidden" checked/>
+        <label for="user-agent-tgl" class="lbl"></label>  
+      </div>
     </div>
-    <div class="col col-4">
-      <input type="checkbox" id="unchecked" class="cbx hidden"/>
-      <label for="unchecked" class="lbl"></label>    
+    <div class="row">
+      <div class="col col-9 text-container">
+        <p>TimeZone</p>
+      </div>
+      <div class="col col-4">
+        <input type="checkbox" id="timezone-tgl" class="cbx hidden" checked/>
+        <label for="timezone-tgl" class="lbl"></label>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col col-9 text-container">
-      <p>Global</p>
+    <div class="row">
+      <div class="col col-9 text-container">
+        <p>Screen Size</p>
+      </div>
+      <div class="col col-4">
+        <input type="checkbox" id="screen-size-tgl" class="cbx hidden" checked/>
+        <label for="screen-size-tgl" class="lbl"></label>
+      </div>
     </div>
-    <div class="col col-4">
-      <input type="checkbox" id="checked" class="cbx hidden" checked/>
-      <label for="checked" class="lbl"></label>
+    <div class="row">
+      <div class="col col-9 text-container">
+        <p>Disable WebGL</p>
+      </div>
+      <div class="col col-4">
+        <input type="checkbox" id="webgl-tgl" class="cbx hidden" checked/>
+        <label for="webgl-tgl" class="lbl"></label>
+      </div>
     </div>
-  </div>
-  <!-- <div class="row">
-    <div class="col col-9 text-container">
-      <p>This Domain</p>
+    <div class="row">
+      <div class="col col-9 text-container">
+        <p>Null Canvas ID</p>
+      </div>
+      <div class="col col-4">
+        <input type="checkbox" id="canvas-tgl" class="cbx hidden" checked/>
+        <label for="canvas-tgl" class="lbl"></label>
+      </div>
     </div>
-    <div class="col col-4">
-      <input type="checkbox" id="unchecked_disabled" class="cbx hidden" disabled/>
-      <label for="unchecked_disabled" class="lbl"></label>
+    <div class="row">
+      <div class="col col-9 text-container">
+        <p>Header Lang</p>
+      </div>
+      <div class="col col-4">
+        <input type="checkbox" id="header-lang-tgl" class="cbx hidden" checked/>
+        <label for="header-lang-tgl" class="lbl"></label>
+      </div>
     </div>
-  </div> -->
+    <div class="row">
+      <div class="col col-9 text-container">
+        <p>❗️Erase Referrer</p>
+      </div>
+      <div class="col col-4">
+        <input type="checkbox" id="referrer-tgl" class="cbx hidden"/>
+        <label for="referrer-tgl" class="lbl"></label>
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col col-9 text-container">
+        <p>Three</p>
+      </div>
+      <div class="col col-4">
+        <input type="checkbox" id="unchecked_disabled" class="cbx hidden" disabled/>
+        <label for="unchecked_disabled" class="lbl"></label>
+      </div>
+    </div> -->
+  </section>
+  
+  <!-- ################ Wide Switches ################ -->
+  
+  <section class="break">
+    <p>Current Site State</p>
+  </section>
+
+  <section>
+    <input class="tgl tgl-skewed" id="local-state" type="checkbox" checked/>
+    <label class="tgl-btn" data-tg-off="OFF" data-tg-on="ON" for="local-state"></label>
+  </section>  
+
+  <section class="break">
+    <p>Global State</p>
+  </section>
+
+  <section>
+    <input class="tgl tgl-skewed" id="global-state" type="checkbox" checked/>
+    <label class="tgl-btn" data-tg-off="OFF" data-tg-on="ON" for="global-state"></label>
+  </section>
 
 </body>
 </html>

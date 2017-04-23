@@ -1,8 +1,10 @@
 body {
-  background: #eee;
-  width: 200px;
+  /*background: #eee;*/
+  width: 175px;
   border: 1px dashed red;
-  /*font-family: sans-serif;*/
+  font-family: sans-serif;
+  padding: 2px;
+  color: #666;
 }
 
 /* +=========================+ */
@@ -33,6 +35,23 @@ body {
 /* |      Layout Design      | */
 /* +=========================+ */
 
+p {
+  text-align: center;
+  padding: 5px 0;
+  font-size: 85%;
+}
+
+.title {
+  color: #bbb;
+  text-align: center;
+  background: #4A4A4A;
+  padding: 4px 0;
+}
+
+.break {
+  background: #EEE;
+}
+
 .text-container {
   position: relative;
   top: -5px;
@@ -41,4 +60,9 @@ body {
 .text-container p {
   text-align: right;
   padding-right: 10px;
+}
+
+/* Temp */
+.logo {
+  height: 150px;
 }
