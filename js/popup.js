@@ -70,11 +70,50 @@ document.addEventListener('DOMContentLoaded', function() {
     sendUpdate(send);
   }
 
-  blacklistBtn.addEventListener('click', blacklistBtnToggle);
-  pauseBtn.addEventListener('click', pauseBtnToggle);
+  // blacklistBtn.addEventListener('click', blacklistBtnToggle);
+  // pauseBtn.addEventListener('click', pauseBtnToggle);
 
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    activeTab = tabs[0].id;
-    chrome.tabs.sendMessage(activeTab, {cmd: 'getOptions'}, setInitialState);
+  // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  //   activeTab = tabs[0].id;
+  //   chrome.tabs.sendMessage(activeTab, {cmd: 'getOptions'}, setInitialState);
+  // });
+
+  // ------------- New Layout ------------ //
+
+  // Switches Tiggles
+  document.getElementsByClassName('switches')[0].addEventListener('click', function(event) {
+    if (event.target.className === 'cbx hidden') {
+      console.log(event.target.checked)
+    }
   });
+
+  // Button Toggles
+  document.getElementsByClassName('toggles')[0].addEventListener('click', function(event) {
+    function allTogglesSet(state) {
+      console.log('set all the buttons to ', state);
+      var toggles = document.getElementsByClassName('cbx hidden');
+      for (var i=0; i<toggles.length; i++) {
+        toggles[i].disabled = state;
+      }
+      document.getElementById('set-default').disabled = state;
+      document.getElementById('local-state').disabled = state;
+    }
+
+    if (event.target.className === 'tgl tgl-skewed') {
+      switch (event.target.id) {
+        case 'global-state':
+          console.log('global state');
+          allTogglesSet(!event.target.checked);
+          break;
+        case 'local-state':
+          console.log('local state');
+          break;
+        case 'set-default':
+          console.log('default state');
+          break;
+      }
+    }
+  });
+
+
 });

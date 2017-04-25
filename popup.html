@@ -28,7 +28,7 @@
 
 
 
-  <section>
+  <section class="switches">
     <div class="row">
       <div class="col col-9 text-container">
         <p>UserAgent</p>
@@ -105,32 +105,30 @@
   
   <!-- ################ Wide Switches ################ -->
 
+  <section class="toggles">
+    <section>
+      <input class="tgl tgl-skewed" id="set-default" type="checkbox"/>
+      <label class="tgl-btn" data-tg-off="Set As Default" data-tg-on="Saved" for="set-default"></label>
+    </section>
 
-  <section>
-    <input class="tgl tgl-skewed" id="set-default" type="checkbox"/>
-    <label class="tgl-btn" data-tg-off="Set As Default" data-tg-on="Saved" for="set-default"></label>
+    <section class="break">
+      <p>Current Site State</p>
+    </section>
+    
+
+    <section>
+      <input class="tgl tgl-skewed" id="local-state" type="checkbox" checked/>
+      <label class="tgl-btn" data-tg-off="DISABLED" data-tg-on="ENABLED" for="local-state"></label>
+    </section>  
+
+    <section class="break">
+      <p>Global State</p>
+    </section>
+
+    <section>
+      <input class="tgl tgl-skewed" id="global-state" type="checkbox" checked/>
+      <label class="tgl-btn" data-tg-off="OFF" data-tg-on="ON" for="global-state"></label>
+    </section>
   </section>
-
-  <section class="break">
-    <p>Current Site State</p>
-  </section>
-  
-
-  <section>
-    <input class="tgl tgl-skewed" id="local-state" type="checkbox" checked/>
-    <label class="tgl-btn" data-tg-off="DISABLED" data-tg-on="ENABLED" for="local-state"></label>
-  </section>  
-
-  <section class="break">
-    <p>Global State</p>
-  </section>
-
-  <section>
-    <input class="tgl tgl-skewed" id="global-state" type="checkbox" checked/>
-    <label class="tgl-btn" data-tg-off="OFF" data-tg-on="ON" for="global-state"></label>
-  </section>
-  
-
-
 </body>
 </html>

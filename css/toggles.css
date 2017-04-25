@@ -114,6 +114,10 @@
   background: #86d993;
 }
 
+.tgl-skewed:disabled + .tgl-btn {
+  background: #888;
+}
+
 .tgl-skewed:checked + .tgl-btn:before {
   left: -100%;
 }
