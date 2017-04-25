@@ -121,3 +121,15 @@
 .tgl-skewed:checked + .tgl-btn:after {
   left: 0;
 }
+
+/*----------------------------------*/
+
+/*.button {
+  background-color: #aaa;
+  color: #ededed;
+  text-align: center;
+  font-size: 10pt;
+  padding: 10px 0;
+  cursor: pointer;
+  width: 100%;
+}*/
