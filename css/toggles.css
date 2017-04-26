@@ -87,6 +87,11 @@
   background: #888;
 }
 
+/* Using the class of red is a hotfix to avoid higher specificity */
+.red-disabled + .tgl-btn {
+  background: #d27171;
+}
+
 .tgl-skewed + .tgl-btn:after, .tgl-skewed + .tgl-btn:before {
   /*   transform: skew(10deg); */
   display: inline-block;

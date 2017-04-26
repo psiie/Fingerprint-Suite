@@ -88,32 +88,30 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Button Toggles
-  document.getElementsByClassName('toggles')[0].addEventListener('click', function(event) {
-    function allTogglesSet(state) {
-      console.log('set all the buttons to ', state);
-      var toggles = document.getElementsByClassName('cbx hidden');
-      for (var i=0; i<toggles.length; i++) {
-        toggles[i].disabled = state;
-      }
-      document.getElementById('set-default').disabled = state;
-      document.getElementById('local-state').disabled = state;
-    }
-
-    if (event.target.className === 'tgl tgl-skewed') {
-      switch (event.target.id) {
-        case 'global-state':
-          console.log('global state');
-          allTogglesSet(!event.target.checked);
-          break;
-        case 'local-state':
-          console.log('local state');
-          break;
-        case 'set-default':
-          console.log('default state');
-          break;
-      }
-    }
+  document.getElementById('local').addEventListener('click', function(event) {
+    console.log(this);
   });
+  // document.getElementsByClassName('toggles')[0].addEventListener('click', function(event) {
+  //   function togglesSet(state, globalOrLocal) {
+  //     console.log('inside func');
+  //     document.getElementById('local-state').disabled = state;
+  //     document.getElementById('set-default').disabled = state;
+  //     var toggles = document.getElementsByClassName('cbx hidden');
+  //     for (var i=0; i<toggles.length; i++) {
+  //       toggles[i].disabled = state;
+  //     }
+
+  //   }
+
+  //   console.log(event);
+  //   if (event.target.id === 'local') {
+  //     console.log('inside local', event.target);
+  //     // togglesSet(!event.target.disabled, '')
+  //   } else if (event.target.id === 'global') {
+  //     console.log('inside global');
+  //     // togglesSet(!event.target.disabled, '')
+  //   }
+  // });
 
 
 });
