@@ -79,39 +79,32 @@ document.addEventListener('DOMContentLoaded', function() {
   // });
 
   // ------------- New Layout ------------ //
+  var $globalBtn   = document.getElementById('global-state'),
+      $localBtn    = document.getElementById('local-state'),
+      $defaultBtn  = document.getElementById('set-default'),
+      $switchTgls  = document.getElementsByClassName('cbx');
+
+  var setDisability = function(state) {
+    $defaultBtn.disabled = state;
+    for (var i=0; i<$switchTgls.length; i++) {
+      $switchTgls[i].disabled = state;
+    }
+  }
 
   // Switches Tiggles
-  document.getElementsByClassName('switches')[0].addEventListener('click', function(event) {
-    if (event.target.className === 'cbx hidden') {
-      console.log(event.target.checked)
-    }
-  });
-
-  // Button Toggles
-  document.getElementById('local').addEventListener('click', function(event) {
-    console.log(this);
-  });
-  // document.getElementsByClassName('toggles')[0].addEventListener('click', function(event) {
-  //   function togglesSet(state, globalOrLocal) {
-  //     console.log('inside func');
-  //     document.getElementById('local-state').disabled = state;
-  //     document.getElementById('set-default').disabled = state;
-  //     var toggles = document.getElementsByClassName('cbx hidden');
-  //     for (var i=0; i<toggles.length; i++) {
-  //       toggles[i].disabled = state;
-  //     }
-
-  //   }
-
-  //   console.log(event);
-  //   if (event.target.id === 'local') {
-  //     console.log('inside local', event.target);
-  //     // togglesSet(!event.target.disabled, '')
-  //   } else if (event.target.id === 'global') {
-  //     console.log('inside global');
-  //     // togglesSet(!event.target.disabled, '')
+  // $switchTgls[0].addEventListener('click', function(event) {
+  //   if (event.target.className === 'cbx hidden') {
+  //     console.log(event.target.checked)
   //   }
   // });
 
+  // Button Toggles
+  $localBtn.addEventListener('click', function(event) {
+    setDisability(!this.checked);
+  });
+  $globalBtn.addEventListener('click', function(event) {
+    $localBtn.disabled   = !this.checked;
+    setDisability(!this.checked);
+  });
 
 });
