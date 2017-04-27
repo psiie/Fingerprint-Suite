@@ -82,22 +82,14 @@ document.addEventListener('DOMContentLoaded', function() {
   var $globalBtn   = document.getElementById('global-state'),
       $localBtn    = document.getElementById('local-state'),
       $defaultBtn  = document.getElementById('set-default'),
-      $switchTgls  = document.getElementsByClassName('cbx');
+      $switchTgls  = document.getElementsByClassName('cbx'),
+      $switchGroup = document.getElementsByClassName('switches');
 
   var setDisability = function(state) {
     $defaultBtn.disabled = state;
-    for (var i=0; i<$switchTgls.length; i++) {
-      $switchTgls[i].disabled = state;
-    }
+    for (var i=0; i<$switchTgls.length; i++) $switchTgls[i].disabled = state;
   }
-
-  // Switches Tiggles
-  // $switchTgls[0].addEventListener('click', function(event) {
-  //   if (event.target.className === 'cbx hidden') {
-  //     console.log(event.target.checked)
-  //   }
-  // });
-
+  
   // Button Toggles
   $localBtn.addEventListener('click', function(event) {
     setDisability(!this.checked);
@@ -107,4 +99,21 @@ document.addEventListener('DOMContentLoaded', function() {
     setDisability(!this.checked);
   });
 
+
+  // Switches Tiggles
+  $switchGroup[0].addEventListener('click', function(event) {
+    // event.stopPropagation(); // event.preventDefault();
+    if (event.target.classList.contains('cbx')) {
+      console.log(event.target.id, event.target.checked);
+    }
+  });
+
+
+
+  // Event deligation causes two events to be fired. Unknown cause.
+  // for (var i=0; i<$switchTgls.length; i++) {
+  //   $switchTgls[i].addEventListener('click', function(event) {
+  //     console.log(event);
+  //   })
+  // }
 });
