@@ -1,3 +1,16 @@
+// event.stopPropagation(); // event.preventDefault();
+
+
+// Event deligation causes two events to be fired. Unknown cause.
+  // for (var i=0; i<$switchTgls.length; i++) {
+  //   $switchTgls[i].addEventListener('click', function(event) {
+  //     console.log(event);
+  //   })
+  // }
+
+  
+
+
 // chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   // console.log('message!');
   // if (request.cmd && request.cmd === 'getMeta') {

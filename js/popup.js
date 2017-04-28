@@ -1,23 +1,65 @@
 document.addEventListener('DOMContentLoaded', function() {
-  var debug        = document.getElementById('debug'),
-      blacklistBtn = document.getElementById('blacklist'),
-      pauseBtn     = document.getElementById('pause'),
+  var $globalBtn   = document.getElementById('global-state'),
+      $localBtn    = document.getElementById('local-state'),
+      $defaultBtn  = document.getElementById('set-default'),
+      $switchTgls  = document.getElementsByClassName('cbx'),
+      $switchGroup = document.getElementsByClassName('switches'),
+      debug        = document.getElementById('debug'),
       pageDisabled = false,
       extDisabled  = false,
       activeTab,
       url;
 
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    activeTab = tabs[0].id;
+    chrome.tabs.sendMessage(activeTab, {cmd: 'getOptions'}, setInitialState);
+  });
+
+  var setDisability = function(state) {
+    $defaultBtn.disabled = state;
+    for (var i=0; i<$switchTgls.length; i++) $switchTgls[i].disabled = state;
+  }
+  
+  $localBtn.addEventListener('click', function(event) {
+    console.log(this.disabled);
+    if (!this.disabled) {
+      setDisability(!this.checked);
+      localBtnToggle();
+    }
+  });
+
+  $globalBtn.addEventListener('click', function(event) {
+    $localBtn.disabled   = !this.checked;
+    setDisability(!this.checked);
+    globalBtnToggle();
+  });
+
+  $switchGroup[0].addEventListener('click', function(event) {
+    if (event.target.classList.contains('cbx')) {
+      console.log(event.target.id, event.target.checked);
+    }
+  });
+
+
+  // --------------- End Initialization ---------------- //
+
   function setInitialState(response) {
+    function disableToggles() {
+      for (var i=0; i<$switchTgls.length; i++) { // make dry
+        $switchTgls[i].disabled = true;
+      }
+    }
     if (response && response.siteDisabled) {
       pageDisabled = true;
-      blacklistBtn.innerText = 'Disabled on this Domain';
-      blacklistBtn.className = 'button alert';
+      $localBtn.checked = false;
+      disableToggles();
     }
     if (response && response.extDisabled) {
       extDisabled = true;
-      pauseBtn.innerText = 'Disabled Globally';
-      pauseBtn.className = 'button alert';
-      blacklistBtn.className = 'button disabled strike';
+      $globalBtn.checked = false;
+      $localBtn.disabled = true;
+      $defaultBtn.disabled = true;
+      disableToggles();
     }
     if (response && response.url) {
       url = response.url;
@@ -25,95 +67,39 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function sendUpdate(message) {
-    chrome.runtime.sendMessage({cmd: 'setState', opt: message, url: url}, function(response) {
-      if (response.cmd == 'readyToReload') {
-        chrome.tabs.sendMessage(activeTab, {cmd: 'reload'}, function() {
-          window.close();
-        });
-      }
-    });
+    // chrome.runtime.sendMessage({cmd: 'setState', opt: message, url: url}, function(response) {
+    //   if (response.cmd == 'readyToReload') {
+    //     chrome.tabs.sendMessage(activeTab, {cmd: 'reload'}, function() {
+    //       window.close();
+    //     });
+    //   }
+    // });
   }
 
-  function blacklistBtnToggle() {
+  function localBtnToggle() {
     var send;
       if (pageDisabled) { // Page is enabled
         pageDisabled = false;
-        blacklistBtn.innerText = 'Running on this Domain';
-        blacklistBtn.className = 'button success';
         send = 'pageEnabled';
       } 
       else { // Page is disabled
         pageDisabled = true;
-        blacklistBtn.innerText = 'Disabled on this Domain';
-        blacklistBtn.className = 'button alert';
         send = 'pageDisabled';
       }
       sendUpdate(send);
   }
 
-  function pauseBtnToggle() {
+  function globalBtnToggle() {
     var send;
     if (extDisabled) { // Plugin is enabled
       extDisabled = false;
-      pauseBtn.innerText = 'Enabled Globally';
-      pauseBtn.className = 'button secondary';
-      blacklistBtn.classList.remove('disabled', 'strike');
       send = 'globalEnabled';
     } 
     else { // Plugin is disabled
       extDisabled = true;
-      pauseBtn.innerText = 'Disabled Globally';
-      pauseBtn.className= 'button alert';
-      blacklistBtn.classList.add('disabled', 'strike');
       send = 'globalDisabled';
     }
     sendUpdate(send);
   }
 
-  // blacklistBtn.addEventListener('click', blacklistBtnToggle);
-  // pauseBtn.addEventListener('click', pauseBtnToggle);
-
-  // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  //   activeTab = tabs[0].id;
-  //   chrome.tabs.sendMessage(activeTab, {cmd: 'getOptions'}, setInitialState);
-  // });
-
-  // ------------- New Layout ------------ //
-  var $globalBtn   = document.getElementById('global-state'),
-      $localBtn    = document.getElementById('local-state'),
-      $defaultBtn  = document.getElementById('set-default'),
-      $switchTgls  = document.getElementsByClassName('cbx'),
-      $switchGroup = document.getElementsByClassName('switches');
-
-  var setDisability = function(state) {
-    $defaultBtn.disabled = state;
-    for (var i=0; i<$switchTgls.length; i++) $switchTgls[i].disabled = state;
-  }
-  
-  // Button Toggles
-  $localBtn.addEventListener('click', function(event) {
-    setDisability(!this.checked);
-  });
-  $globalBtn.addEventListener('click', function(event) {
-    $localBtn.disabled   = !this.checked;
-    setDisability(!this.checked);
-  });
-
-
-  // Switches Tiggles
-  $switchGroup[0].addEventListener('click', function(event) {
-    // event.stopPropagation(); // event.preventDefault();
-    if (event.target.classList.contains('cbx')) {
-      console.log(event.target.id, event.target.checked);
-    }
-  });
-
-
-
-  // Event deligation causes two events to be fired. Unknown cause.
-  // for (var i=0; i<$switchTgls.length; i++) {
-  //   $switchTgls[i].addEventListener('click', function(event) {
-  //     console.log(event);
-  //   })
-  // }
 });
