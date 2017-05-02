@@ -159,12 +159,14 @@ function injectFunc(func) {
 }
 
 var siteDisabled, 
-    extDisabled;
+    extDisabled,
+    switches;
 
 // Get informed from background.js as to if this page is blacklisted
 chrome.runtime.sendMessage({cmd: 'informContentJs', url: window.location.hostname}, function(response) {
   extDisabled  = response.extDisabled;
   siteDisabled = response.siteDisabled;
+  switches     = response.switches;
   if (!extDisabled && !siteDisabled) injectFunc(payload);
   
   console.log('state: ', extDisabled, siteDisabled);
@@ -172,10 +174,11 @@ chrome.runtime.sendMessage({cmd: 'informContentJs', url: window.location.hostnam
 
 // Reload on change from Popup.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.cmd == 'reload') setTimeout("location.reload();", 2000);
+  // if (request.cmd == 'reload') setTimeout("location.reload();", 2000);
   if (request.cmd == 'getOptions') sendResponse({
     siteDisabled: siteDisabled, 
     extDisabled:  extDisabled,
+    switches:     switches,
     url: window.location.hostname
   });
 });

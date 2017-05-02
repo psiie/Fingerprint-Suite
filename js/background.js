@@ -2,6 +2,7 @@ var userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (K
 var regX = /(?:http[s]*\:\/\/)*.*?\.(?=([^\/]*\..{2,5}))/i;
 var extDisabled = false;
 var storage = {};
+var switches = {};
 var icons = {
   disabled: {
     48: 'img/48x48-grey.png'
@@ -32,6 +33,8 @@ function replaceAgent(req) {
 }
 
 function saveDB() {
+  console.log('running saveDB');
+  storage.switches = switches;
   chrome.storage.local.set(storage, function() {
     console.log('saved storage', storage);
   });
@@ -39,14 +42,13 @@ function saveDB() {
 
 function cleanStorage() {
   var changesMade = false;
-  console.log('STORAGE: ', storage.sites);
   for (var site in storage.sites) {
     if (storage.sites[site] === false) {
       delete storage.sites[site];
       changesMade = true;
     }
   }
-  console.log('FINISHED: ', storage.sites);
+  console.log('STORAGE: ', storage);
   if (changesMade) saveDB();
 }
 
@@ -69,12 +71,16 @@ function onMessage(request, sender, sendResponse) {
   
   function informContentJsRequest() {
     var siteDisabled = storage.sites[domain];
-    sendResponse({extDisabled: extDisabled, siteDisabled: siteDisabled});
+    sendResponse({
+      extDisabled:  extDisabled, 
+      siteDisabled: siteDisabled,
+      switches:     switches
+    });
     setIconState( !(extDisabled || siteDisabled) );
   }
 
   function setStateRequest() {
-    function setStorage(boolean) {storage.sites[domain] = boolean;}
+    function setStorage(boolean) {storage.sites[domain] = boolean}
     function setGlobal(state) {
       if (state === 'disabled') {
         extDisabled = true;
@@ -85,6 +91,7 @@ function onMessage(request, sender, sendResponse) {
       }
     }
 
+    if (request.switches) switches = request.switches;
     if (request.opt == 'globalDisabled') setGlobal('disabled');
     else if (request.opt == 'globalEnabled') setGlobal('enabled');
     else if (request.opt == 'pageDisabled' && domain && domain.length > 1) setStorage(true);

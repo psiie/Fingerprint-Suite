@@ -2,13 +2,22 @@ document.addEventListener('DOMContentLoaded', function() {
   var $globalBtn   = document.getElementById('global-state'),
       $localBtn    = document.getElementById('local-state'),
       $defaultBtn  = document.getElementById('set-default'),
+      debug        = document.getElementById('debug'),
       $switchTgls  = document.getElementsByClassName('cbx'),
       $switchGroup = document.getElementsByClassName('switches'),
-      debug        = document.getElementById('debug'),
       pageDisabled = false,
       extDisabled  = false,
       activeTab,
-      url;
+      url,
+      switches = {
+        userAgent  : true,
+        timeZone   : true,
+        screenSize : true,
+        webGL      : true,
+        canvasID   : true,
+        headerLang : true,
+        headerRefer: false
+      };
 
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     activeTab = tabs[0].id;
@@ -36,13 +45,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   $switchGroup[0].addEventListener('click', function(event) {
     if (event.target.classList.contains('cbx')) {
-      console.log(event.target.id, event.target.checked);
+      switches[event.target.id] = event.target.checked;
+      sendUpdate(null);
     }
   });
 
 
   // --------------- End Initialization ---------------- //
 
+  // add switches to setinitialstate
   function setInitialState(response) {
     function disableToggles() {
       for (var i=0; i<$switchTgls.length; i++) { // make dry
@@ -61,19 +72,31 @@ document.addEventListener('DOMContentLoaded', function() {
       $defaultBtn.disabled = true;
       disableToggles();
     }
+    if (response && response.switches) {
+      switches = response.switches;
+      for (var key in switches) { // jshint ignore:line
+        document.getElementById(key).checked = switches[key];
+      }
+    }
     if (response && response.url) {
       url = response.url;
     }
   }
 
   function sendUpdate(message) {
-    // chrome.runtime.sendMessage({cmd: 'setState', opt: message, url: url}, function(response) {
-    //   if (response.cmd == 'readyToReload') {
-    //     chrome.tabs.sendMessage(activeTab, {cmd: 'reload'}, function() {
-    //       window.close();
-    //     });
-    //   }
-    // });
+    var payload = {
+      cmd: 'setState', 
+      switches: switches,
+      url: url
+    };
+    if (message) payload.opt = message;
+    chrome.runtime.sendMessage(payload, function(response) {
+      if (response.cmd == 'readyToReload') {
+        chrome.tabs.sendMessage(activeTab, {cmd: 'reload'}, function() {
+          // window.close();
+        });
+      }
+    });
   }
 
   function localBtnToggle() {
