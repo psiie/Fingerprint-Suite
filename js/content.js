@@ -183,7 +183,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   });
 
   if (request.cmd == 'setSwitches') {
-    switches = request.switches;
+    if (request.switches) switches = request.switches;
+    if (request.pageDisabled) siteDisabled = request.pageDisabled;
+    if (request.extDisabled) extDisabled = request.extDisabled;
   }
 });
 

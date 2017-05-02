@@ -33,8 +33,8 @@ function replaceAgent(req) {
 }
 
 function saveDB() {
-  console.log('running saveDB');
   storage.switches = switches;
+  storage.extDisabled = extDisabled;
   chrome.storage.local.set(storage, function() {
     console.log('saved storage', storage);
   });
@@ -90,13 +90,12 @@ function onMessage(request, sender, sendResponse) {
         setIconState(true);
       }
     }
-
+    console.log('setStateRequest: ', request);
     if (request.switches) switches = request.switches;
     if (request.opt == 'globalDisabled') setGlobal('disabled');
     else if (request.opt == 'globalEnabled') setGlobal('enabled');
     else if (request.opt == 'pageDisabled' && domain && domain.length > 1) setStorage(true);
     else if (request.opt == 'pageEnabled') setStorage(false);
-
     saveDB();
     sendResponse({cmd: 'readyToReload'}); // Reload page
   }

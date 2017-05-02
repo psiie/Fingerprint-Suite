@@ -28,12 +28,23 @@ document.addEventListener('DOMContentLoaded', function() {
     $defaultBtn.disabled = state;
     for (var i=0; i<$switchTgls.length; i++) $switchTgls[i].disabled = state;
   }
+
+  var updateContentJsWithSettings = function() {
+    var settings = {
+      cmd: 'setSwitches', 
+      switches: switches,
+      pageDisabled: pageDisabled,
+      extDisabled: extDisabled
+    };
+    chrome.tabs.sendMessage(activeTab, settings, setInitialState);
+  }
   
   $localBtn.addEventListener('click', function(event) {
     console.log(this.disabled);
     if (!this.disabled) {
       setDisability(!this.checked);
       localBtnToggle();
+      updateContentJsWithSettings();
     }
   });
 
@@ -41,12 +52,14 @@ document.addEventListener('DOMContentLoaded', function() {
     $localBtn.disabled   = !this.checked;
     setDisability(!this.checked);
     globalBtnToggle();
+    updateContentJsWithSettings();
   });
 
   $switchGroup[0].addEventListener('click', function(event) {
     if (event.target.classList.contains('cbx')) {
       switches[event.target.id] = event.target.checked;
-      chrome.tabs.sendMessage(activeTab, {cmd: 'setSwitches', switches: switches}, setInitialState);
+      updateContentJsWithSettings();
+      // chrome.tabs.sendMessage(activeTab, {cmd: 'setSwitches', switches: switches}, setInitialState);
       sendUpdate(null);
     }
   });
