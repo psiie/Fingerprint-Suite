@@ -119,7 +119,8 @@ function init() {
     });
   }
   var getStorageCB = function(obj) {
-    storage = obj;
+    storage  = obj;
+    switches = obj.switches;
     if (!storage.hasOwnProperty('sites')) storage.sites = {};
     if (!storage.hasOwnProperty('extDisabled')) storage.extDisabled = extDisabled;
     cleanStorage();

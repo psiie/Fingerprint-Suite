@@ -181,5 +181,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switches:     switches,
     url: window.location.hostname
   });
+
+  if (request.cmd == 'setSwitches') {
+    switches = request.switches;
+  }
 });
 

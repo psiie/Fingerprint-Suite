@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
   $switchGroup[0].addEventListener('click', function(event) {
     if (event.target.classList.contains('cbx')) {
       switches[event.target.id] = event.target.checked;
+      chrome.tabs.sendMessage(activeTab, {cmd: 'setSwitches', switches: switches}, setInitialState);
       sendUpdate(null);
     }
   });
