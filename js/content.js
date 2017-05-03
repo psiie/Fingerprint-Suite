@@ -1,4 +1,4 @@
-function payload() {
+function payload(switches) {
   // Timezone Spoofer
   function spoofTimezone() {
     window.Date.prototype.getTimezoneOffset = function() {return 300};
@@ -138,29 +138,26 @@ function payload() {
     }
   }
 
-  // Canvas Fingerprint Disabler
-  // var script = document.createElement('script');
-  // script.id = '1337';
-  // script.type = "text/javascript";
-
-  overrideCanvasProto(HTMLCanvasElement);
-  overrideCanvaRendProto(CanvasRenderingContext2D);
-  overrideDocumentProto(Document);
-  spoofTimezone();
-  screenPluginPlatformSpoof();
-  if (!window.ogcctxfunc8675309) webGLDisabler();
+  if (switches.canvasID) {
+    overrideCanvasProto(HTMLCanvasElement);
+    overrideCanvaRendProto(CanvasRenderingContext2D);
+    overrideDocumentProto(Document);
+  }
+  if (switches.timeZone) spoofTimezone();
+  if (switches.screenSize) screenPluginPlatformSpoof();
+  if (switches.webGL && !window.ogcctxfunc8675309) webGLDisabler();
 }
+var siteDisabled, 
+    extDisabled,
+    switches;
+
 
 function injectFunc(func) {
   var script = document.createElement("script");
   script.type = "text/javascript";
-  script.textContent = "(" + func + ")();";
+  script.textContent = "(" + func + ")(" + JSON.stringify(switches) + ");";
   document.documentElement.appendChild(script);
 }
-
-var siteDisabled, 
-    extDisabled,
-    switches;
 
 // Get informed from background.js as to if this page is blacklisted
 chrome.runtime.sendMessage({cmd: 'informContentJs', url: window.location.hostname}, function(response) {

@@ -15,7 +15,7 @@ var icons = {
 }
 
 function replaceAgent(req) {
-  if (extDisabled) return;
+  if (extDisabled || switches.timeZone === false) return;
   for (var i=0; i<req.requestHeaders.length; i++) {
     if (req.requestHeaders[i].name == 'User-Agent') {
       req.requestHeaders[i].value = userAgent;
